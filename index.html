@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.A.M. — Sociedad Anónima de Música · Expediente Clasificado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#000;--surface:#111;--surface-2:#1a1a1a;--surface-3:#222;
+  --border:#2a2a2a;--border-accent:#444933;
+  --accent:#e8ff00;--accent-dim:#c3f400;
+  --text:#e4e2e1;--muted:#c4c9ac;--blue:#0266ff;--error:#ff3333;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.5}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#000}
+::-webkit-scrollbar-thumb{background:var(--accent)}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'JetBrains Mono',monospace}
+.label{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1,h2,h3{font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-.02em;line-height:1}
+.matrix-bg{background-image:radial-gradient(#1a1a1a 1px,transparent 1px);background-size:20px 20px}
+.neon-glow{filter:drop-shadow(0 0 10px rgba(232,255,0,.4))}
+/* SCANNER FRAME */
+.sf{position:relative;border:1px solid var(--border)}
+.sf::before,.sf::after{content:'';position:absolute;width:14px;height:14px;border-color:var(--accent);border-style:solid;z-index:5}
+.sf::before{top:-2px;left:-2px;border-width:1px 0 0 2px}
+.sf::after{top:-2px;right:-2px;border-width:1px 2px 0 0}
+.sf .cbl{position:absolute;width:14px;height:14px;border-color:var(--accent);border-style:solid;bottom:-2px;left:-2px;border-width:0 0 2px 2px;z-index:5}
+.sf .cbr{position:absolute;width:14px;height:14px;border-color:var(--accent);border-style:solid;bottom:-2px;right:-2px;border-width:0 2px 2px 0;z-index:5}
+/* PERFORATED */
+.perforated-v{background-image:linear-gradient(to bottom,#444933 50%,transparent 50%);background-size:1px 10px;background-repeat:repeat-y;width:1px;flex-shrink:0;margin:0 12px}
+/* SCANLINE */
+.scanline{position:relative;overflow:hidden}
+.scanline::after{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:rgba(232,255,0,.05);animation:scanMove 8s linear infinite;pointer-events:none;z-index:4}
+@keyframes scanMove{0%{top:0}100%{top:100%}}
+/* GRAYSCALE HOVER */
+.gsc{filter:grayscale(.75) contrast(1.15) brightness(.9);transition:filter .5s ease}
+.event-card:hover .gsc{filter:grayscale(0) contrast(1) brightness(1)}
+/* REVEAL ANIMATIONS */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .75s ease,transform .75s ease}
+.reveal.revealed{opacity:1;transform:none}
+.clip-reveal{clip-path:inset(0 100% 0 0);transition:clip-path .9s cubic-bezier(.77,0,.175,1);display:block}
+.clip-reveal.revealed{clip-path:inset(0 0% 0 0)}
+/* HEADER */
+header{position:fixed;top:0;left:0;right:0;height:64px;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.85);backdrop-filter:blur(14px)}
+.loc-chip{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.05em}
+.brand-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:30px;letter-spacing:.04em;color:var(--accent);cursor:pointer;text-shadow:0 0 20px rgba(232,255,0,.3)}
+.nav-links{display:flex;gap:22px}
+.nav-links a{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--accent)}
+.header-right{display:flex;align-items:center;gap:16px}
+.icon-btn{width:40px;height:40px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:18px;transition:border-color .2s,color .2s}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+/* BUTTONS */
+.btn{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:12px 20px;border:1px solid transparent;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;background:none;color:var(--text)}
+.btn-accent{background:var(--accent);color:#000;border-color:var(--accent)}
+.btn-accent:hover{box-shadow:0 0 22px rgba(232,255,0,.45)}
+.btn-ghost{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.03);color:var(--text)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.magnetic{transition:transform .15s ease}
+/* HERO */
+.hero{min-height:100vh;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding-top:64px}
+.hero-bg{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr 1fr;z-index:0}
+.hero-bg canvas{width:100%;height:100%;display:block;object-fit:cover}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,#000 10%,rgba(0,0,0,.35) 55%,rgba(0,0,0,.6) 100%);z-index:1}
+.hero-content{position:relative;z-index:10;max-width:680px;padding:64px;margin-bottom:48px}
+.hero h1{font-size:clamp(48px,7vw,80px);letter-spacing:-.04em;margin:18px 0 24px;text-transform:uppercase;line-height:.92}
+.hero h1 .y{color:var(--accent)}
+.hero-desc{color:var(--muted);font-size:17px;max-width:500px;margin-bottom:32px;line-height:1.65}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:44px}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.1);padding-top:24px}
+.hero-stat{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;letter-spacing:.05em}
+.hero-stat span{display:block;color:var(--muted);font-weight:500;font-size:10px;letter-spacing:.12em;margin-top:5px}
+.scroll-hint{position:absolute;bottom:36px;right:36px;z-index:10;display:flex;flex-direction:column;align-items:center;gap:10px}
+.scroll-hint .label{writing-mode:vertical-rl}
+.scroll-hint .line{width:1px;height:54px;background:var(--accent)}
+/* TICKER */
+.ticker{display:flex;align-items:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);overflow:hidden}
+.ticker-badge{display:flex;align-items:center;gap:10px;background:var(--accent);color:#000;padding:15px 22px;flex-shrink:0;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.1em;white-space:nowrap}
+.viz-bars{display:flex;gap:3px;align-items:flex-end;height:18px}
+.viz-bars span{width:3px;background:#000;animation:viz 1s ease-in-out infinite alternate}
+.viz-bars span:nth-child(2){animation-delay:.2s}.viz-bars span:nth-child(3){animation-delay:.4s}.viz-bars span:nth-child(4){animation-delay:.1s}.viz-bars span:nth-child(5){animation-delay:.35s}
+@keyframes viz{0%{height:4px}100%{height:18px}}
+.marquee-wrap{overflow:hidden;flex:1}
+.marquee{display:flex;white-space:nowrap;animation:marquee 30s linear infinite}
+.marquee span{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.08em;padding:15px 30px;color:var(--muted);border-right:1px solid var(--border)}
+.marquee span b{color:var(--accent)}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+/* FILTERS */
+.filters{position:sticky;top:64px;z-index:50;display:flex;gap:10px;padding:14px 28px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.92);backdrop-filter:blur(12px);overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.filter-btn{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.1em;padding:9px 16px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .2s;flex-shrink:0}
+.filter-btn:hover{border-color:var(--border-accent);color:var(--text)}
+.filter-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+/* SECTION */
+.sec{padding:110px 40px;position:relative}
+.wrap{max-width:1300px;margin:0 auto}
+.sec-head{margin-bottom:64px}
+.eyebrow{color:var(--accent);margin-bottom:14px;display:block}
+.sec-head h2{font-size:clamp(32px,5vw,48px);text-transform:uppercase}
+/* EVENT CARDS BENTO */
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.card-wrap{transition:opacity .4s ease,transform .4s ease}
+.card-wrap.card-hidden{opacity:0;transform:scale(0.9) translateY(16px);pointer-events:none}
+.card-wrap.card-gone{display:none}
+.filter-info{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);padding:10px 28px;border-bottom:1px solid var(--border)}
+.filter-info #filterLabel{margin-left:6px}
+.event-card{border:1px solid var(--border);background:var(--surface);transition:border-color .3s,box-shadow .3s;position:relative;display:block}
+.event-card:hover{border-color:var(--accent);box-shadow:0 0 28px rgba(232,255,0,.1)}
+.card-media{position:relative;height:320px;overflow:hidden}
+.card-media canvas{width:100%;height:100%;display:block}
+.date-badge{position:absolute;top:14px;left:14px;background:var(--accent);color:#000;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.06em;padding:6px 11px;z-index:3}
+.city-badge{position:absolute;bottom:14px;left:14px;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;letter-spacing:.1em;padding:5px 10px;z-index:3}
+.sold-badge{position:absolute;top:14px;right:14px;background:var(--error);color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;letter-spacing:.08em;padding:5px 10px;z-index:3}
+.card-body{padding:28px 28px 28px 24px;display:flex;gap:0;align-items:stretch}
+.card-info{flex:1;min-width:0}
+.card-info h3{font-size:22px;text-transform:uppercase;margin-bottom:8px;line-height:1.1}
+.card-info p{color:var(--muted);font-size:13px;line-height:1.55}
+.card-genre{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;letter-spacing:.1em;color:var(--accent);margin-bottom:10px}
+.card-price{display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;flex-shrink:0;padding-left:24px}
+.price-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--muted);margin-bottom:4px}
+.price-val{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:20px;color:var(--accent);white-space:nowrap}
+/* GALLERY VIBES SECTION */
+.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.gallery-item{position:relative;overflow:hidden;height:260px;cursor:pointer}
+.gallery-item canvas{width:100%;height:100%;display:block;transition:transform .6s ease}
+.gallery-item:hover canvas{transform:scale(1.04)}
+.gallery-item .tag{position:absolute;bottom:16px;left:16px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);padding:6px 10px;border-left:1px solid var(--accent);z-index:3;text-transform:uppercase}
+.gallery-item .overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.5),transparent 50%);z-index:2}
+/* QR SECTION */
+.qr-sec{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border)}
+.qr-panel{padding:64px}
+.qr-panel .eyebrow{margin-bottom:14px}
+.qr-panel h2{font-size:42px;text-transform:uppercase;margin:0 0 18px}
+.qr-panel p{color:var(--muted);margin-bottom:30px;max-width:400px;font-size:16px;line-height:1.65}
+.qr-panel .btns{display:flex;gap:14px;flex-wrap:wrap}
+.qr-visual{display:flex;align-items:center;justify-content:center;background:var(--surface-2);position:relative;min-height:300px;border-left:1px solid var(--border)}
+.qr-grid{width:180px;height:180px;display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.qr-grid div{background:var(--text)}
+.qr-grid div.off{background:var(--surface-3)}
+.qr-label{position:absolute;font-family:'Syne',sans-serif;font-weight:800;font-size:13px;background:#000;color:var(--accent);padding:6px 10px;border:1px solid var(--accent);top:50%;left:50%;transform:translate(-50%,-50%)}
+/* MAP */
+.map-grid{display:grid;grid-template-columns:320px 1fr;gap:24px;align-items:start;max-width:860px}
+.map-wrap{border:1px solid var(--border);background:var(--surface);padding:16px;max-height:340px;overflow:hidden}
+.city-panel{border:1px solid var(--border);background:var(--surface)}
+.city-panel-head{padding:24px;border-bottom:1px solid var(--border)}
+.city-panel-head h3{font-size:26px;text-transform:uppercase;margin-bottom:6px}
+.city-row{display:flex;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.04em}
+.city-row:last-of-type{border-bottom:none}
+.city-row span:last-child{color:var(--accent)}
+.city-panel-foot{padding:20px 24px}
+.pin{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* STATS */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.stat-item{padding:60px 40px;text-align:center;border-right:1px solid var(--border)}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:52px;color:var(--accent);letter-spacing:-.02em;line-height:1}
+.stat-lbl{margin-top:14px}
+/* ORG CTA */
+.org-cta{border:1px solid var(--accent);display:grid;grid-template-columns:1.3fr 1fr}
+.org-l{padding:64px}
+.org-l .eyebrow{margin-bottom:16px}
+.org-l h2{font-size:clamp(36px,5vw,54px);text-transform:uppercase;margin:0 0 20px}
+.org-l p{color:var(--muted);margin-bottom:30px;max-width:440px;font-size:16px;line-height:1.65}
+.org-r{position:relative;min-height:300px;border-left:1px solid var(--border)}
+.org-r canvas{width:100%;height:100%;display:block;position:absolute;inset:0}
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:96px 28px 120px}
+.foot-giant{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(60px,13vw,130px);color:var(--accent);letter-spacing:.02em;line-height:.88;text-align:center;margin-bottom:18px}
+.foot-tag{text-align:center;margin-bottom:32px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em}
+.foot-line{height:2px;background:var(--accent);margin-bottom:52px}
+.foot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:36px;max-width:1100px;margin:0 auto 72px}
+.foot-col h4{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.12em;color:var(--accent);margin-bottom:20px}
+.foot-col a{display:block;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:13px;color:var(--muted);padding:7px 0;transition:color .2s}
+.foot-col a:hover{color:var(--text)}
+.pay-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:44px}
+.pay-pill{border:1px solid var(--border);padding:11px 20px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.08em;color:var(--muted);transition:border-color .2s,color .2s}
+.pay-pill:hover{border-color:var(--accent);color:var(--accent)}
+.foot-bottom{display:flex;justify-content:space-between;max-width:1100px;margin:0 auto;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--muted);flex-wrap:wrap;gap:12px}
+.blink{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:7px;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:90;display:none;justify-content:space-around;border-top:1px solid var(--border);background:rgba(0,0,0,.94);backdrop-filter:blur(12px);padding:10px 0 14px}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9px;letter-spacing:.08em;color:var(--muted);transition:color .2s}
+.bottom-nav a.active,.bottom-nav a:hover{color:var(--accent)}
+/* DIVIDER */
+.sec-divider{height:2px;background:var(--border);width:100%}
+/* OPACITY FLICK */
+.opacity-50{opacity:.5;transition:opacity .08s}
+/* RESPONSIVE */
+header{gap:12px}
+
+@media(max-width:1099px){
+  .bento{grid-template-columns:1fr 1fr}
+  .gallery-grid{grid-template-columns:1fr 1fr}
+  .card-media{height:240px}
+}
+@media(max-width:1024px){
+  .loc-chip{display:none}
+}
+@media(max-width:920px){
+  .sec{padding:64px 20px}
+  .sec-head{margin-bottom:44px}
+  .nav-links{display:none}
+  .hero h1{font-size:46px}
+  .hero-content{padding:28px}
+  .stats-bar,.foot-grid{grid-template-columns:1fr}
+  .qr-sec,.map-grid,.org-cta{grid-template-columns:1fr}
+  .qr-panel,.org-l{padding:40px 24px}
+  .qr-visual{border-left:none;border-top:1px solid var(--border);min-height:220px}
+  .org-r{border-left:none;border-top:1px solid var(--border);min-height:220px}
+  .stat-item{border-right:none;border-bottom:1px solid var(--border);padding:44px 24px}
+  .stat-item:last-child{border-bottom:none}
+  .gallery-grid{grid-template-columns:1fr}
+  .gallery-item{height:200px}
+  .bottom-nav{display:flex}
+  .brand-logo{font-size:24px}
+}
+@media(max-width:960px){
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  header{padding:0 16px}
+  .nav-links{display:none}
+}
+@media(max-width:700px){
+  .bento{grid-template-columns:1fr}
+  .card-media{height:200px}
+}
+@media(max-width:480px){
+  .foot-grid{grid-template-columns:1fr}
+  .crear-txt{display:none}
+  .crear-plus{display:inline}
+}
+.crear-plus{display:none}
+
+/* --- MODERN UI & SECRET UX UPGRADES --- */
+.event-card, .qr-sec, .org-cta, .map-wrap, .city-panel, .icon-btn { border-width: 1px !important; border-radius: 4px; border-color: rgba(255,255,255,0.12) !important; background: rgba(17,17,17,0.6) !important; backdrop-filter: blur(8px); }
+.btn { border-width: 1px !important; border-radius: 3px; }
+.event-card:hover { border-color: var(--accent) !important; transform: translateY(-4px); }
+h1, h2, h3 { font-weight: 700 !important; letter-spacing: -0.01em !important; }
+.hero h1 { font-size: clamp(36px, 5vw, 60px) !important; }
+.org-l h2, .qr-panel h2 { font-size: clamp(30px, 4vw, 42px) !important; }
+
+/* Redacted Hover Effect */
+.redacted { position: relative; display: inline-block; background: var(--text); color: var(--text); user-select: none; transition: background 0.4s ease, color 0.4s ease; cursor: crosshair; }
+.redacted::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(0,0,0,0.8) 2px, rgba(0,0,0,0.8) 4px); opacity: 1; transition: opacity 0.4s ease; pointer-events: none; }
+.redacted:hover { background: transparent; color: var(--accent); text-shadow: 0 0 8px rgba(232,255,0,0.5); }
+.redacted:hover::after { opacity: 0; }
+
+/* Refined Glitch Effect */
+.glitch { position: relative; display: inline-block; animation: pure-glitch 4s infinite alternate; }
+@keyframes pure-glitch {
+  0%, 96% { text-shadow: none; transform: none; }
+  97% { text-shadow: -2px 0 cyan, 2px 0 magenta; transform: translateX(-1px); }
+  98% { text-shadow: 2px 0 cyan, -2px 0 magenta; transform: translateX(1px); }
+  99% { text-shadow: none; transform: none; }
+}
+
+/* Glassmorphism & Cyber Clip */
+.cyber-clip { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
+
+
+/* --- GRAVITY FALLS OCCULT AESTHETIC --- */
+:root {
+  --accent: #f0c040; /* Mystical Gold */
+  --accent-dim: #cba328;
+  --bg-uv: rgba(50, 0, 100, 0.1); /* Blacklight Purple */
+}
+
+/* Encrypted Reveal Effect */
+.uv-reveal { position: relative; }
+.uv-reveal::after { content: attr(data-secret); position: absolute; inset: 0; color: var(--accent); text-shadow: 0 0 12px rgba(232,255,0,0.4); background: rgba(0,0,0,0.85); opacity: 0; transition: opacity 0.3s; pointer-events: none; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 18px; letter-spacing: 0.2em; z-index: 10; }
+.uv-reveal:hover::after { opacity: 1; }
+.uv-reveal:hover canvas, .uv-reveal:hover img { opacity: 0.2; }
+
+/* Eye of Providence SVG background */
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' opacity='0.03'%3E%3Cpolygon points='50,10 90,90 10,90' fill='none' stroke='white' stroke-width='2'/%3E%3Ccircle cx='50' cy='60' r='15' fill='none' stroke='white' stroke-width='2'/%3E%3Ccircle cx='50' cy='60' r='5' fill='white'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+
+.mystic-border { border: 2px solid var(--accent); border-radius: 0; position: relative; }
+.mystic-border::before, .mystic-border::after { content: '👁'; position: absolute; font-size: 14px; color: var(--accent); }
+.mystic-border::before { top: -10px; left: -10px; }
+.mystic-border::after { bottom: -10px; right: -10px; }
+
+/* Parchment vibe for cards */
+.event-card { background: linear-gradient(135deg, rgba(20,20,15,0.9), rgba(10,10,5,0.9)) !important; }
+
+
+/* Mystic image filter to emulate occult/gravity falls darkness */
+.mystic-img {
+    filter: sepia(0.6) hue-rotate(245deg) saturate(2) brightness(0.65) contrast(1.4);
+    transition: filter 0.4s ease, transform 0.4s ease;
+}
+.event-card:hover .mystic-img {
+    filter: sepia(0.3) hue-rotate(245deg) saturate(1.5) brightness(0.9) contrast(1.2);
+}
+
+
+/* Spotlight Flashlight Effect */
+.hero { position: relative; overflow: hidden; --mouse-x: 50%; --mouse-y: 50%; }
+.spotlight-reveal {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: rgba(0,0,0,0.85); /* Darkens the background */
+  mask-image: radial-gradient(circle 200px at var(--mouse-x) var(--mouse-y), transparent 0%, black 100%);
+  -webkit-mask-image: radial-gradient(circle 200px at var(--mouse-x) var(--mouse-y), transparent 0%, black 100%);
+  transition: mask-position 0.1s ease;
+}
+.spotlight-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(100px, 20vw, 300px);
+  font-weight: 800;
+  color: var(--accent);
+  opacity: 0.15;
+  text-shadow: 0 0 30px var(--accent);
+}
+
+
+/* Fix card images */
+.card-media img, .gallery-item img, .mystic-img, .gsc {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+
+/* --- BENTO PUZZLE LAYOUT --- */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* Base card flex structure to fill puzzle gaps */
+.event-card {
+  display: flex !important;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-media {
+  flex-grow: 1;
+  min-height: 220px;
+  position: relative;
+}
+
+.card-body {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* PUZZLE PIECES */
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Mobile Fallback */
+@media(max-width: 900px) {
+  .bento {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  
+}
+@media(max-width: 600px) {
+  .bento {
+    grid-template-columns: 1fr;
+  }
+  
+}
+
+
+/* --- BREATHABILITY / PADDING FIX --- */
+.sec { padding-left: 6vw !important; padding-right: 6vw !important; }
+.hero-content { padding-right: 6vw !important; padding-left: 6vw !important; }
+header { padding-left: 6vw !important; padding-right: 6vw !important; }
+.portal-sec { padding-left: 6vw !important; padding-right: 6vw !important; }
+
+@media(max-width: 900px) {
+  .sec, .hero-content, header, .portal-sec { padding-left: 4vw !important; padding-right: 4vw !important; }
+}
+@media(max-width: 500px) {
+  .sec, .hero-content, header, .portal-sec { padding-left: 6vw !important; padding-right: 6vw !important; }
+}
+
+
+/* Filter Dimming */
+.card-dimmed { opacity: 0.1 !important; filter: grayscale(100%) !important; pointer-events: none; transform: scale(0.98); transition: all 0.4s ease; }
+
+
+/* Audio viz bar fix */
+.audio-viz {
+  flex-grow: 1;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.audio-viz .bar {
+  width: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: audio-pulse var(--dur, 1s) ease-in-out infinite alternate;
+}
+.audio-viz .bar.muted { background: var(--border); }
+@keyframes audio-pulse {
+  from { height: var(--min-h, 4px); }
+  to { height: var(--max-h, 24px); }
+}
+
+
+/* Card wrap full-height for puzzle */
+.card-wrap { height: 100%; }
+.card-wrap .event-card { height: 100%; }
+
+
+/* Filter bar entrance animation */
+.filter-btn {
+  animation: filter-appear 0.4s ease both;
+}
+.filter-btn:nth-child(1) { animation-delay: 0s; }
+.filter-btn:nth-child(2) { animation-delay: 0.05s; }
+.filter-btn:nth-child(3) { animation-delay: 0.1s; }
+.filter-btn:nth-child(4) { animation-delay: 0.15s; }
+.filter-btn:nth-child(5) { animation-delay: 0.2s; }
+.filter-btn:nth-child(6) { animation-delay: 0.25s; }
+@keyframes filter-appear {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Active filter glow */
+.filter-btn.active {
+  box-shadow: 0 0 14px rgba(240, 192, 64, 0.35);
+  color: #000 !important;
+}
+
+/* Card transition polish */
+.card-wrap {
+  transition: opacity 0.5s ease, transform 0.5s ease, filter 0.5s ease !important;
+}
+.card-dimmed {
+  opacity: 0.08 !important;
+  filter: grayscale(100%) blur(1px) !important;
+  transform: scale(0.97) !important;
+  pointer-events: none;
+}
+
+/* Price value polish */
+.price-val {
+  font-size: 14px !important;
+  line-height: 1.3;
+}
+
+/* Genre tag gold accent */
+.card-genre {
+  color: var(--accent) !important;
+  letter-spacing: 0.12em;
+}
+
+/* Gallery image hover scale */
+.gallery-item:hover img {
+  transform: scale(1.06);
+  transition: transform 0.6s ease;
+}
+.gallery-item img {
+  transition: transform 0.6s ease;
+}
+
+/* Header nav active link indicator */
+.nav-links a[href="acceso.html"] {
+  border: 1px solid var(--accent);
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+.nav-links a[href="acceso.html"]:hover {
+  background: var(--accent);
+  color: #000;
+}
+
+/* Section eyebrow polish */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 1px;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* Stats bar number hover */
+.stat-item:hover .stat-num {
+  text-shadow: 0 0 20px var(--accent);
+  transition: text-shadow 0.3s ease;
+}
+
+
+/* Genre color coding */
+.card-genre[data-g="industrial"] { color: #ff6b6b !important; }
+.card-genre[data-g="hardgroove"] { color: #69d4f8 !important; }
+.card-genre[data-g="acid"] { color: #c77dff !important; }
+.card-genre[data-g="mental"] { color: #00f5a0 !important; }
+.card-genre[data-g="ebm"] { color: #ff9a3c !important; }
+
+
+
+
+/* --- HORIZONTAL SCROLL CAROUSEL --- */
+.horizontal-track {
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 40px;
+  padding-right: 6vw; /* Space at end */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  align-items: stretch;
+}
+.horizontal-track::-webkit-scrollbar {
+  display: none;
+}
+.horizontal-track .card-wrap {
+  flex: 0 0 clamp(320px, 80vw, 450px);
+  scroll-snap-align: center;
+  transition: opacity 0.6s cubic-bezier(0.19, 1, 0.22, 1), transform 0.6s cubic-bezier(0.19, 1, 0.22, 1), filter 0.6s ease;
+  opacity: 0.4;
+  transform: scale(0.9);
+  filter: grayscale(80%);
+}
+.horizontal-track .card-wrap.focused {
+  opacity: 1;
+  transform: scale(1);
+  filter: grayscale(0%);
+}
+
+/* Giant background date */
+.giant-date {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 100px;
+  font-weight: 900;
+  color: var(--accent);
+  opacity: 0.05;
+  z-index: 0;
+  pointer-events: none;
+  line-height: 0.8;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+/* Enhancing Genre */
+.card-genre {
+  font-size: 14px !important;
+  border-left: 3px solid var(--accent);
+  padding-left: 10px;
+  background: linear-gradient(90deg, rgba(232,255,0,0.1), transparent);
+  display: inline-block;
+}
+
+
+/* --- CONVERSION UX ANIMATIONS --- */
+.pulse-cta {
+  animation: cta-pulse 2s infinite cubic-bezier(0.66, 0, 0, 1);
+  box-shadow: 0 0 0 0 rgba(232,255,0,0.7);
+}
+@keyframes cta-pulse {
+  to { box-shadow: 0 0 0 25px rgba(232,255,0,0); }
+}
+
+.glitch-hover {
+  position: relative;
+  overflow: hidden;
+}
+.glitch-hover::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: skewX(-20deg);
+  transition: 0s;
+}
+.glitch-hover:hover::before {
+  animation: shine 0.6s forwards;
+}
+@keyframes shine { 100% { left: 200%; } }
+
+.buy-btn-inline {
+  width: 100%;
+  margin-top: 14px;
+  justify-content: center;
+  font-size: 14px !important;
+  letter-spacing: 0.15em !important;
+  padding: 14px 20px !important;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  transition: all 0.3s;
+}
+.buy-btn-inline:hover {
+  background: var(--accent);
+  color: #000;
+  box-shadow: 0 0 20px rgba(232,255,0,0.4);
+}
+
+.giant-cta-wrap {
+  text-align: center;
+  margin-top: 60px;
+  position: relative;
+}
+.giant-cta {
+  display: inline-flex;
+  font-size: 18px !important;
+  padding: 20px 40px !important;
+  border-radius: 4px !important;
+}
+
+/* ── MOBILE OVERFLOW FIXES ── */
+@media(max-width:768px){
+  /* Header: ocultar nav y achicar botones */
+  header{
+    display:flex !important;
+    grid-template-columns:unset !important;
+    justify-content:space-between;
+    padding:0 16px !important;
+    gap:10px;
+    height:56px;
+  }
+  .header-left{gap:10px}
+  .nav-links{display:none !important}
+  .header-right{gap:8px}
+  .header-right .btn-ghost{display:none}            /* ocultar INICIAR SESIÓN */
+  .header-right .btn-accent{font-size:11px;padding:9px 12px;letter-spacing:.04em}
+  .crear-txt{display:none}
+  .crear-plus{display:inline !important}
+
+  /* Filter bar: contener y permitir scroll interno */
+  .filters{
+    max-width:100vw;
+    padding:10px 16px;
+    gap:8px;
+  }
+  .filter-btn{font-size:10px;padding:7px 12px;flex-shrink:0}
+
+  /* Cartelera horizontal: card más angosto */
+  .horizontal-track .card-wrap{
+    flex:0 0 clamp(280px,88vw,380px) !important;
+  }
+  .horizontal-track{padding-right:16px;gap:16px}
+
+  /* Map: single col */
+  .map-grid{grid-template-columns:1fr !important;max-width:100%}
+  .map-wrap{max-height:260px}
+
+  /* Secciones: padding controlado */
+  .sec{padding-left:16px !important;padding-right:16px !important}
+  .hero-content{padding-left:20px !important;padding-right:20px !important}
+}
+
+/* ── EXTRA SMALL ── */
+@media(max-width:400px){
+  .hero h1{font-size:38px !important}
+  .stat-num{font-size:38px}
+  .foot-giant{font-size:56px}
+  .filter-btn{font-size:9px;padding:6px 10px}
+}
+
+/* B2B Section Enhancements */
+.b2b-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 32px;
+}
+.b2b-bullets li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+.b2b-bullets li::before {
+  content: '✓';
+  color: var(--accent);
+  font-weight: bold;
+  font-size: 16px;
+}
+
+</style>
+</head>
+<body class="matrix-bg">
+
+<header style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; padding: 0 4vw !important;">
+  <div class="header-left" style="display: flex; align-items: center; gap: 24px;">
+    <a href="index.html" class="brand-logo" title="Sociedad Anónima de Música" data-text="S.A.M." style="text-decoration: none;">S.A.M.</a>
+    <div class="loc-chip mono" style="margin-top: 4px;">📍 <span class='redacted'>Terminal 01: BOG</span></div>
+  </div>
+  
+  <nav class="nav-links" style="display: flex; justify-content: center; gap: 28px;">
+    <a href="eventos.html">EVENTOS</a>
+    <a href="#map">LUGARES DE ENCUENTRO</a>
+    <a href="#org">ÚNETE A LA SOCIEDAD</a>
+  </nav>
+  
+  <div class="header-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 16px;">
+    <a href="acceso.html" class="btn btn-ghost" style="padding: 10px 18px; border-color: var(--accent); color: var(--accent);">INICIAR SESIÓN</a>
+    <button class="btn btn-accent neon-glow pulse-cta glitch-hover" onclick="location.href='acceso.html'"><span class="crear-txt">PUBLICAR EVENTO</span><span class="crear-plus">+</span></button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" id="heroBg">
+    <canvas data-portrait="270"></canvas>
+    <canvas data-portrait="0"></canvas>
+    <canvas data-portrait="195"></canvas>
+  </div>
+  <div class="spotlight-layer">S.A.M.</div>
+  <div class="hero-overlay spotlight-reveal"></div>
+  <div class="hero-content">
+    <div class="label">SOCIEDAD ANÓNIMA DE MÚSICA · COLOMBIA · DESDE 2024</div>
+    
+    <h1 class="glitch" data-text="ÚNETE A LA SOCIEDAD QUE NO EXISTE">ÚNETE<br>A LA<br>SOCIEDAD<br>QUE NO <span class="y">EXISTE</span></h1>
+    <p class="hero-desc">La plataforma de eventos techno y underground más clandestina de Colombia. Música en vivo, fiestas secretas y festivales alternativos. Tú consigues el pase, nosotros revelamos el lugar.</p>
+    <div class="hero-btns">
+      <button class="btn btn-accent magnetic neon-glow" onclick="location.href='eventos.html'">VER EVENTOS →</button>
+      <button class="btn btn-ghost" onclick="location.href='#org'">UNIRME A LA SOCIEDAD</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat live-tick">340+<span>EVENTOS REALIZADOS</span></div>
+      <div class="hero-stat">$1.500 COP<span>COMISIÓN FIJA</span></div>
+      <div class="hero-stat">3<span>CIUDADES</span></div>
+      <div class="hero-stat">24H<span>PAGO A ARTISTAS</span></div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="label">SCROLL</div>
+    <div class="line"></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-badge">PRÓXIMOS EVENTOS S.A.M.
+    <div class="viz-bars"><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+  <div class="marquee-wrap">
+    <div class="marquee">
+      <span><b>VOID RAVE 003</b> · BOG · 22.06 · INDUSTRIAL</span>
+      <span>PRIMAL 004 · MDE · 28.06 · <b>HARDGROOVE</b></span>
+      <span><b>CLASIFICADO SESSION #009</b> · ?? · ?? · ACID TECHNO</span>
+      <span>MUROS VIVOS VOL.4 · CLO · 05.07 · <b>TECHNO MENTAL</b></span>
+      <span><b>BATALLA DE LOS GALLOS</b> · BOG · 12.07 · DARK EBM</span>
+      <span>NOISE SESSIONS #12 · MDE · 19.07 · <b>INDUSTRIAL</b></span>
+      <span><b>VOID RAVE 003</b> · BOG · 22.06 · INDUSTRIAL</span>
+      <span>PRIMAL 004 · MDE · 28.06 · <b>HARDGROOVE</b></span>
+      <span><b>CLASIFICADO SESSION #009</b> · ?? · ?? · ACID TECHNO</span>
+      <span>MUROS VIVOS VOL.4 · CLO · 05.07 · <b>TECHNO MENTAL</b></span>
+      <span><b>BATALLA DE LOS GALLOS</b> · BOG · 12.07 · DARK EBM</span>
+      <span>NOISE SESSIONS #12 · MDE · 19.07 · <b>INDUSTRIAL</b></span>
+    </div>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+        <button class="filter-btn active">TODOS</button>
+        <button class="filter-btn">INDUSTRIAL</button>
+        <button class="filter-btn">HARDGROOVE</button>
+        <button class="filter-btn">ACID TECHNO</button>
+        <button class="filter-btn">TECHNO MENTAL</button>
+        <button class="filter-btn">DARK EBM</button>
+      </div>
+<div class="filter-info" id="filterInfo">
+  <span id="filterCount">6</span> EVENTOS DISPONIBLES
+  <span id="filterLabel"></span>
+  <span style="margin-left:12px; color: var(--accent);">— Filtra por género musical</span>
+</div>
+
+<!-- EVENTS BENTO -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow label">CARTELERA</span>
+      <h2 class="clip-reveal">PRÓXIMOS EVENTOS S.A.M.</h2>
+    </div>
+    <div class="horizontal-track" id="eventsTrack">
+
+      <div class="card-wrap" data-genres="industrial">
+      <a href="evento-detalle.html" class="event-card reveal cyber-clip">
+        <div class="card-media scanline uv-reveal" data-secret="TRUST NO ONE">
+          <div class="date-badge">22 JUN · 22:00</div>
+          <div class="city-badge"><span class='redacted'>BOG / CHAPINERO</span></div>
+          <img src="assets/gravity_music_journal.png" class="gsc" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="card-body">
+            <div class="giant-date">S.A.M.</div>
+          
+          <div class="card-info">
+            <div class="card-genre" data-g="industrial">INDUSTRIAL · UNDERGROUND</div>
+            <div class="org-chip" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:6px;"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-right:5px;animation:blink 1.4s ease-in-out infinite;vertical-align:middle;"></span>Emitido por: Miembro #404</div>
+            <h3>VOID RAVE 003</h3>
+            
+            <p>Industrial sin concesiones. VØLTA, NXMADE, DARK MOTOR.</p>
+          </div>
+          <div class="perforated-v"></div>
+          <div class="card-price">
+            <div class="price-label">DESDE</div>
+            <div class="price-val">Aporte voluntario: $45K</div>
+            <button class="btn buy-btn-inline glitch-hover">COMPRAR ENTRADA →</button>
+          </div>
+        </div>
+      </a>
+      </div>
+
+      <div class="card-wrap" data-genres="hardgroove">
+      <a href="evento-detalle.html" class="event-card reveal cyber-clip" style="transition-delay:.1s">
+        <div class="card-media scanline uv-reveal" data-secret="TRUST NO ONE">
+          <div class="date-badge">28 JUN · 20:00</div>
+          <div class="city-badge"><span class='redacted'>MDE / POBLADO</span></div>
+          <img src="https://images.unsplash.com/photo-1574169208507-84376144848b?auto=format&fit=crop&q=80&w=600" class="gsc" alt="Underground Rap">
+        </div>
+        <div class="card-body">
+            <div class="giant-date">S.A.M.</div>
+          
+          <div class="card-info">
+            <div class="card-genre" data-g="hardgroove">HARDGROOVE · FREESTYLE</div>
+            <div class="org-chip" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:6px;"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-right:5px;animation:blink 1.4s ease-in-out infinite;vertical-align:middle;"></span>Emitido por: Miembro #404</div>
+            <h3>BATALLA DE LOS GALLOS</h3>
+            <p>Freestyle puro. K-RUZ vs TKMX. Host: LILA SECT.</p>
+          </div>
+          <div class="perforated-v"></div>
+          <div class="card-price">
+            <div class="price-label">DESDE</div>
+            <div class="price-val">Aporte voluntario: $30K</div>
+            <button class="btn buy-btn-inline glitch-hover">COMPRAR ENTRADA →</button>
+          </div>
+        </div>
+      </a>
+      </div>
+
+      <div class="card-wrap" data-genres="acid">
+      <a href="evento-detalle.html" class="event-card reveal cyber-clip" style="transition-delay:.2s">
+        <div class="card-media scanline uv-reveal" data-secret="TRUST NO ONE">
+          <div class="date-badge">?? : ??</div>
+          <div class="city-badge"><span class='redacted'>BOG / CLASIFICADO</span></div>
+          <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=600" class="gsc" alt="Secret Event">
+        </div>
+        <div class="card-body">
+            <div class="giant-date">S.A.M.</div>
+          
+          <div class="card-info">
+            <div class="card-genre" data-g="acid">ACID TECHNO · CLASIFICADO</div>
+            <div class="org-chip" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:6px;"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-right:5px;animation:blink 1.4s ease-in-out infinite;vertical-align:middle;"></span>Emitido por: Miembro #404</div>
+            <h3>CLASIFICADO SESSION #009</h3>
+            <p>Ubicación revelada 4H antes. Solo para el círculo.</p>
+          </div>
+          <div class="perforated-v"></div>
+          <div class="card-price">
+            <div class="price-label">DESDE</div>
+            <div class="price-val">Aporte voluntario: $55K</div>
+            <button class="btn buy-btn-inline glitch-hover">COMPRAR ENTRADA →</button>
+          </div>
+        </div>
+      </a>
+      </div>
+
+      <div class="card-wrap" data-genres="mental">
+      <a href="evento-detalle.html" class="event-card reveal cyber-clip" style="transition-delay:.05s">
+        <div class="card-media scanline uv-reveal" data-secret="TRUST NO ONE">
+          <div class="date-badge">05 JUL · 18:00</div>
+          <div class="city-badge">CLO / GRANADA</div>
+          <img src="https://images.unsplash.com/photo-1620025425660-f42197e8876a?auto=format&fit=crop&q=80&w=600" class="gsc" alt="Urban Art">
+        </div>
+        <div class="card-body">
+            <div class="giant-date">S.A.M.</div>
+          
+          <div class="card-info">
+            <div class="card-genre" data-g="mental">TECHNO MENTAL · LIVE</div>
+            <div class="org-chip" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:6px;"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-right:5px;animation:blink 1.4s ease-in-out infinite;vertical-align:middle;"></span>Emitido por: Miembro #404</div>
+            <h3>MUROS VIVOS VOL.4</h3>
+            <p>Arte mural en vivo + set NXMADE. Zona de graffiti libre.</p>
+          </div>
+          <div class="perforated-v"></div>
+          <div class="card-price">
+            <div class="price-label">DESDE</div>
+            <div class="price-val">Aporte voluntario: $25K</div>
+            <button class="btn buy-btn-inline glitch-hover">COMPRAR ENTRADA →</button>
+          </div>
+        </div>
+      </a>
+      </div>
+
+      <div class="card-wrap" data-genres="industrial,ebm">
+      <a href="evento-detalle.html" class="event-card reveal cyber-clip" style="transition-delay:.15s">
+        <div class="card-media scanline uv-reveal" data-secret="TRUST NO ONE">
+          <div class="date-badge">12 JUL · 21:00</div>
+          <div class="city-badge">MDE / LAURELES</div>
+          <div class="sold-badge">ÚLTIMAS ENTRADAS</div>
+          <img src="assets/gravity_music_journal.png" class="gsc" style="width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div class="card-body">
+            <div class="giant-date">S.A.M.</div>
+          
+          <div class="card-info">
+            <div class="card-genre" data-g="ebm">DARK EBM · INDUSTRIAL</div>
+            <div class="org-chip" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:6px;"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-right:5px;animation:blink 1.4s ease-in-out infinite;vertical-align:middle;"></span>Emitido por: Miembro #404</div>
+            <h3>NOISE SESSIONS #12</h3>
+            <p>Galpón industrial. Sistema d&b. DARK MOTOR B2B VØLTA.</p>
+          </div>
+          <div class="perforated-v"></div>
+          <div class="card-price">
+            <div class="price-label">DESDE</div>
+            <div class="price-val">Aporte voluntario: $38K</div>
+            <button class="btn buy-btn-inline glitch-hover">COMPRAR ENTRADA →</button>
+          </div>
+        </div>
+      </a>
+      </div>
+
+      <div class="card-wrap" data-genres="hardgroove">
+      <a href="evento-detalle.html" class="event-card reveal cyber-clip" style="transition-delay:.25s">
+        <div class="card-media scanline uv-reveal" data-secret="TRUST NO ONE">
+          <div class="date-badge">19 JUL · 22:00</div>
+          <div class="city-badge">BOG / USAQUÉN</div>
+          <img src="https://images.unsplash.com/photo-1574169208507-84376144848b?auto=format&fit=crop&q=80&w=600" class="gsc" alt="Underground Rap">
+        </div>
+        <div class="card-body">
+            <div class="giant-date">S.A.M.</div>
+          
+          <div class="card-info">
+            <div class="card-genre" data-g="hardgroove">HARDGROOVE · HIP-HOP</div>
+            <div class="org-chip" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:6px;"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-right:5px;animation:blink 1.4s ease-in-out infinite;vertical-align:middle;"></span>Emitido por: Miembro #404</div>
+            <h3>PRIMAL 004</h3>
+            <p>Cuarta edición. K-RUZ presenta nuevo material. All night.</p>
+          </div>
+          <div class="perforated-v"></div>
+          <div class="card-price">
+            <div class="price-label">DESDE</div>
+            <div class="price-val">Aporte voluntario: $42K</div>
+            <button class="btn buy-btn-inline glitch-hover">COMPRAR ENTRADA →</button>
+          </div>
+        </div>
+      </a>
+      </div>
+
+    </div>
+
+    <div class="giant-cta-wrap">
+        <a href="eventos.html" class="btn btn-accent giant-cta pulse-cta glitch-hover">VER TODOS LOS EVENTOS Y COMPRAR ENTRADAS →</a>
+      </div>
+  </div>
+</section>
+
+<div class="sec-divider"></div>
+
+<!-- VIBES GALLERY -->
+<section class="sec" style="padding-top:80px;padding-bottom:80px">
+  <div class="wrap">
+    <!-- AUDIO FREQUENCIES -->
+    <div class="sec-head reveal" style="margin-bottom: 40px;">
+      <span class="eyebrow label">ESCUCHA ANTES DE IR</span>
+      <h2>SETS Y GRABACIONES</h2>
+    </div>
+    
+    <div class="bento reveal" style="grid-template-columns: 1fr 1fr; margin-bottom: 80px;">
+      
+      <!-- Audio Player 1 -->
+      <div class="event-card cyber-clip" style="position:relative; padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px;">
+          <span class="label" style="color: var(--accent);">TRANSMISIÓN 001</span>
+          <span class="label">04:22</span>
+        </div>
+        <h3 style="font-size: 20px; margin-bottom: 8px;">VOID RAVE SET - BOGOTÁ</h3>
+        <p style="color: var(--muted); font-size: 13px; margin-bottom: 24px;">Set grabado en vivo. Bogotá, 2024. Archivo exclusivo para miembros de la sociedad.</p>
+
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <button class="btn btn-accent neon-glow" style="border-radius: 50%; width: 48px; height: 48px; padding: 0; justify-content: center; font-size: 18px;">▶</button>
+          <div class="audio-viz">
+            <div class="bar" style="--dur:.6s;--min-h:4px;--max-h:20px"></div>
+            <div class="bar" style="--dur:.9s;--min-h:8px;--max-h:32px"></div>
+            <div class="bar" style="--dur:.7s;--min-h:12px;--max-h:36px"></div>
+            <div class="bar" style="--dur:1.1s;--min-h:6px;--max-h:28px"></div>
+            <div class="bar" style="--dur:.5s;--min-h:4px;--max-h:40px"></div>
+            <div class="bar" style="--dur:.8s;--min-h:10px;--max-h:30px"></div>
+            <div class="bar" style="--dur:.65s;--min-h:4px;--max-h:18px"></div>
+            <div class="bar" style="--dur:1.2s;--min-h:8px;--max-h:34px"></div>
+            <div class="bar" style="--dur:.75s;--min-h:6px;--max-h:26px"></div>
+            <div class="bar muted" style="--dur:.9s;--min-h:4px;--max-h:12px"></div>
+            <div class="bar muted" style="--dur:.6s;--min-h:4px;--max-h:8px"></div>
+            <div class="bar muted" style="--dur:1s;--min-h:4px;--max-h:16px"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audio Player 2 -->
+      <div class="event-card cyber-clip" style="padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 16px;">
+          <span class="label" style="color: var(--accent);">TRANSMISIÓN 002</span>
+          <span class="label">08:15</span>
+        </div>
+        <h3 style="font-size: 20px; margin-bottom: 8px;">SINDICATO DEL RUIDO</h3>
+        <p style="color: var(--muted); font-size: 13px; margin-bottom: 24px;">Grabación en vivo desde La Central, Medellín. Experimental y sin filtros.</p>
+        
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <button class="btn btn-ghost" style="border-radius: 50%; width: 48px; height: 48px; padding: 0; justify-content: center; font-size: 18px;">▶</button>
+          <div class="audio-viz">
+            <div class="bar muted" style="--dur:.7s;--min-h:4px;--max-h:10px"></div>
+            <div class="bar muted" style="--dur:.9s;--min-h:4px;--max-h:20px"></div>
+            <div class="bar muted" style="--dur:.6s;--min-h:4px;--max-h:30px"></div>
+            <div class="bar muted" style="--dur:1s;--min-h:4px;--max-h:18px"></div>
+            <div class="bar muted" style="--dur:.8s;--min-h:4px;--max-h:36px"></div>
+            <div class="bar muted" style="--dur:.65s;--min-h:4px;--max-h:24px"></div>
+            <div class="bar muted" style="--dur:.75s;--min-h:4px;--max-h:14px"></div>
+            <div class="bar muted" style="--dur:1.1s;--min-h:4px;--max-h:10px"></div>
+            <div class="bar muted" style="--dur:.55s;--min-h:4px;--max-h:20px"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="sec-head reveal" style="margin-top: 80px; margin-bottom: 32px;">
+      <span class="eyebrow label">ARCHIVOS MULTIMEDIA</span>
+      <h2 class="clip-reveal">REGISTROS ARCHIVADOS</h2>
+    </div>
+  <div class="gallery-grid reveal">
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=400" class="mystic-img" style="width:100%;height:100%;object-fit:cover;">
+      <div class="overlay"></div>
+      <div class="tag">Asamblea · Bogotá</div>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1470229722913-7c092fb6224d?auto=format&fit=crop&q=80&w=400" class="mystic-img" style="width:100%;height:100%;object-fit:cover;">
+      <div class="overlay"></div>
+      <div class="tag">Freestyle · Medellín</div>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&q=80&w=400" class="mystic-img" style="width:100%;height:100%;object-fit:cover;">
+      <div class="overlay"></div>
+      <div class="tag">Secret · ???</div>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=400" class="mystic-img" style="width:100%;height:100%;object-fit:cover;">
+      <div class="overlay"></div>
+      <div class="tag">Arte Mural · Cali</div>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=400" class="mystic-img" style="width:100%;height:100%;object-fit:cover;">
+      <div class="overlay"></div>
+      <div class="tag">Sótano · Chapinero</div>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1540039155732-680874e0d5f3?auto=format&fit=crop&q=80&w=400" class="mystic-img" style="width:100%;height:100%;object-fit:cover;">
+      <div class="overlay"></div>
+      <div class="tag">Techno · Galpón</div>
+    </div>
+  </div>
+</section>
+
+<div class="sec-divider"></div>
+
+<!-- QR SECTION -->
+<section class="sec">
+  <div class="wrap">
+    <div class="qr-sec sf reveal cyber-clip">
+      <span class="cbl"></span><span class="cbr"></span>
+      <div class="qr-panel">
+        <span class="eyebrow label">TU ENTRADA</span>
+        <h2>TU CÓDIGO<br>DE ENTRADA</h2>
+        <p>Una vez compres tu entrada, recibirás un código único. Guárdalo: te dará acceso al lugar del evento 4 horas antes. Sin papel, sin fila.</p>
+        <div class="btns">
+          <button class="btn btn-accent">VER MI ENTRADA</button>
+          <button class="btn btn-ghost">CÓMO FUNCIONA</button>
+        </div>
+      </div>
+      <div class="qr-visual uv-reveal mystic-border" data-secret="TRUST NO ONE">
+        <div class="qr-grid" id="qrGrid"></div>
+        <div class="qr-label">S.A.M.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAP -->
+<section class="sec matrix-bg" id="map">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow label">RASTREO SATELITAL</span>
+      <h2 class="clip-reveal">MAPA DE OPERACIONES</h2>
+    </div>
+    <div class="filters" style="position:static;background:none;border:none;padding:0 0 28px;backdrop-filter:none">
+        <button class="filter-btn active">TODOS</button>
+        <button class="filter-btn">INDUSTRIAL</button>
+        <button class="filter-btn">HARDGROOVE</button>
+        <button class="filter-btn">ACID TECHNO</button>
+        <button class="filter-btn">TECHNO MENTAL</button>
+        <button class="filter-btn">DARK EBM</button>
+      </div>
+    <div class="map-grid reveal">
+      <div class="map-wrap">
+        <svg viewBox="0 0 320 400" width="100%" style="display:block">
+          <defs>
+            <radialGradient id="pin1"><stop offset="0%" stop-color="#8a2be2" stop-opacity=".6"/><stop offset="100%" stop-color="#8a2be2" stop-opacity="0"/></radialGradient>
+            <radialGradient id="pin2"><stop offset="0%" stop-color="#00ffb4" stop-opacity=".6"/><stop offset="100%" stop-color="#00ffb4" stop-opacity="0"/></radialGradient>
+            <radialGradient id="pin3"><stop offset="0%" stop-color="#e8ff00" stop-opacity=".6"/><stop offset="100%" stop-color="#e8ff00" stop-opacity="0"/></radialGradient>
+          </defs>
+          <!-- Colombia shape simplified -->
+          <path d="M130 30 L185 50 L220 90 L230 140 L215 190 L200 230 L160 310 L130 370 L105 310 L85 240 L80 180 L95 120 L110 70 Z" fill="none" stroke="#2a2a2a" stroke-width="2"/>
+          <path d="M80 180 L55 200 L45 240 L70 260 L85 240" fill="none" stroke="#2a2a2a" stroke-width="2"/>
+          <!-- Grid -->
+          <line x1="0" y1="100" x2="320" y2="100" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="0" y1="200" x2="320" y2="200" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="0" y1="300" x2="320" y2="300" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="80" y1="0" x2="80" y2="400" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="160" y1="0" x2="160" y2="400" stroke="#1a1a1a" stroke-width="1"/>
+          <line x1="240" y1="0" x2="240" y2="400" stroke="#1a1a1a" stroke-width="1"/>
+          <!-- Bogotá -->
+          <circle cx="22" cy="22" r="22" fill="url(#pin1)" transform="translate(152,140) scale(.85)"/>
+          <circle class="pin" cx="162" cy="160" r="7" fill="#8a2be2"/>
+          <circle cx="162" cy="160" r="12" fill="none" stroke="#8a2be2" stroke-width="1" opacity=".4"/>
+          <text x="176" y="157" fill="#e4e2e1" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">BOGOTÁ</text>
+          <text x="176" y="170" fill="#c4c9ac" font-family="JetBrains Mono,monospace" font-size="9">182 llamados</text>
+          <!-- Medellín -->
+          <circle cx="22" cy="22" r="22" fill="url(#pin2)" transform="translate(110,105) scale(.7)"/>
+          <circle class="pin" cx="120" cy="120" r="6" fill="#00ffb4" style="animation-delay:.6s"/>
+          <circle cx="120" cy="120" r="10" fill="none" stroke="#00ffb4" stroke-width="1" opacity=".4"/>
+          <text x="132" y="117" fill="#e4e2e1" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">MEDELLÍN</text>
+          <text x="132" y="130" fill="#c4c9ac" font-family="JetBrains Mono,monospace" font-size="9">97 llamados</text>
+          <!-- Cali -->
+          <circle cx="22" cy="22" r="22" fill="url(#pin3)" transform="translate(98,215) scale(.65)"/>
+          <circle class="pin" cx="108" cy="230" r="5" fill="#e8ff00" style="animation-delay:1.1s"/>
+          <circle cx="108" cy="230" r="9" fill="none" stroke="#e8ff00" stroke-width="1" opacity=".4"/>
+          <text x="119" y="227" fill="#e4e2e1" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">CALI</text>
+          <text x="119" y="240" fill="#c4c9ac" font-family="JetBrains Mono,monospace" font-size="9">61 llamados</text>
+        </svg>
+      </div>
+      <div class="city-panel">
+        <div class="city-panel-head">
+          <span class="label" style="color:var(--accent);margin-bottom:8px;display:block">NODO ACTIVO</span>
+          <h3>BOGOTÁ</h3>
+        </div>
+        <div class="city-row"><span>CONVOCATORIAS ACTIVAS</span><span>182</span></div>
+        <div class="city-row"><span>ESTA SEMANA</span><span>14</span></div>
+        <div class="city-row"><span>SESSIONS CLASIFICADO</span><span>03</span></div>
+        <div class="city-row"><span>ZONA CALIENTE</span><span>CHAPINERO</span></div>
+        <div class="city-row"><span>GÉNERO #1</span><span>INDUSTRIAL</span></div>
+        <div class="city-panel-foot">
+          <button class="btn btn-accent" style="width:100%;justify-content:center">VER CONVOCATORIAS BOG →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item reveal">
+    <div class="stat-num" data-count="340">0</div>
+    <div class="stat-lbl label">CONVOCATORIAS ACTIVAS</div>
+  </div>
+  <div class="stat-item reveal" style="transition-delay:.1s">
+    <div class="stat-num" data-count="38.2" data-dec="1">0</div>
+    <div class="stat-lbl label">MILLONES COP VENDIDOS</div>
+  </div>
+  <div class="stat-item reveal" style="transition-delay:.2s">
+    <div class="stat-num" data-count="2482">0</div>
+    <div class="stat-lbl label">PASES CIFRADOS EMITIDOS</div>
+  </div>
+  <div class="stat-item reveal" style="transition-delay:.3s">
+    <div class="stat-num" data-count="24">0</div>
+    <div class="stat-lbl label">HORAS LIQUIDACIÓN DIAN</div>
+  </div>
+</div>
+
+<!-- ORG CTA -->
+<section class="sec" id="org">
+  <div class="wrap">
+    <div class="org-cta sf reveal cyber-clip">
+      <span class="cbl"></span><span class="cbr"></span>
+      <div class="org-l">
+        <span class="eyebrow label">¿ERES ORGANIZADOR DE EVENTOS?</span>
+          <h2>¿ORGANIZAS<br>EVENTOS?</h2>
+          <p style="color:var(--muted); font-size:16px;">Sociedad Anónima de Música (S.A.M.) es la plataforma definitiva para publicar tu rave, fiesta o festival. Olvídate de los monopolios de boletería.</p>
+          <ul class="b2b-bullets">
+            <li>LIQUIDEZ INMEDIATA (24H VÍA NEQUI/PSE)</li>
+            <li>COMISIÓN FIJA DE SOLO $1.500 COP</li>
+            <li>PÚBLICO 100% ELECTRÓNICO Y UNDERGROUND</li>
+            <li>DATOS DE COMPRADORES SIN RESTRICCIONES</li>
+          </ul>
+        <button class="btn btn-accent neon-glow magnetic pulse-cta glitch-hover">CREAR MI EVENTO GRATIS →</button>
+      </div>
+      <div class="org-r"><img src="https://images.unsplash.com/photo-1598387181032-a3103a2db5b3?auto=format&fit=crop&q=80&w=800" class="mystic-img" style="width:100%;height:100%;object-fit:cover;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-giant">S.A.M.</div>
+  <div style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.2em; color:var(--muted); margin-top:-10px; margin-bottom:24px; text-transform:uppercase;">Sociedad Anónima de Música</div>
+  <div class="foot-tag">SMART ACCESS MAP · COLOMBIA UNDERGROUND · 2026</div>
+  <div class="foot-line"></div>
+  <div class="foot-grid wrap">
+    <div class="foot-col">
+      <h4>PLATAFORMA</h4>
+      <a href="eventos.html">Eventos</a>
+      <a href="#map">Mapa</a>
+      <a href="evento-detalle.html">Tickets</a>
+      <a href="#">Cómo funciona</a>
+    </div>
+    <div class="foot-col">
+      <h4>EL CÍRCULO</h4>
+      <a href="#">Crear evento</a>
+      <a href="#">Liquidez 24H</a>
+      <a href="#">Comisiones</a>
+      <a href="#">Soporte</a>
+    </div>
+    <div class="foot-col">
+      <h4>CIUDADES</h4>
+      <a href="#">Bogotá</a>
+      <a href="#">Medellín</a>
+      <a href="#">Cali</a>
+      <a href="#">Próximas</a>
+    </div>
+    <div class="foot-col">
+      <h4>LEGAL</h4>
+      <a href="#">Términos</a>
+      <a href="#">Privacidad</a>
+      <a href="#">Reembolsos</a>
+      <a href="#">Contacto</a>
+    </div>
+  </div>
+  <div class="pay-row">
+    <div class="pay-pill">PSE</div>
+    <div class="pay-pill">NEQUI</div>
+    <div class="pay-pill">DAVIPLATA</div>
+    <div class="pay-pill">BOLD</div>
+    <div class="pay-pill">WOMPI</div>
+  </div>
+  <div class="foot-bottom wrap">
+    <div>© 2026 S.A.M. — TODOS LOS DERECHOS RESERVADOS</div>
+    <div><span class="blink"></span>BOG NODE: ONLINE</div>
+  </div>
+</footer>
+
+<!-- BOTTOM NAV (mobile) -->
+<nav class="bottom-nav">
+  <a href="index.html" class="active"><span>◎</span>DISCOVER</a>
+  <a href="#map"><span>⊕</span>MAP</a>
+  <a href="evento-detalle.html"><span>⊟</span>PASES CIFRADOS</a>
+  <a href="#"><span>◉</span>PROFILE</a>
+</nav>
+
+<script>
+/* ─── CANVAS ART ─── */
+function drawPortrait(ctx, w, h, hue) {
+  // Dark atmospheric background
+  ctx.fillStyle = '#030208'; ctx.fillRect(0,0,w,h);
+  // Background haze
+  const haze = ctx.createRadialGradient(w/2,h,0,w/2,h,h);
+  haze.addColorStop(0, `hsla(${hue},60%,20%,0.2)`);
+  haze.addColorStop(1, 'transparent');
+  ctx.fillStyle = haze; ctx.fillRect(0,0,w,h);
+  // Laser beams from top
+  for(let i = 0; i < 8; i++) {
+    const x0 = w * (0.1 + i * 0.11);
+    const x1 = w * 0.5 + (i%2===0?-1:1) * w * 0.3 * Math.random();
+    const lg = ctx.createLinearGradient(x0, 0, x1, h);
+    lg.addColorStop(0, `hsla(${hue},90%,65%,${0.4 + Math.random()*0.3})`);
+    lg.addColorStop(0.6, `hsla(${hue},80%,50%,0.08)`);
+    lg.addColorStop(1, 'transparent');
+    ctx.strokeStyle = lg; ctx.lineWidth = 0.8 + Math.random()*1.4;
+    ctx.beginPath(); ctx.moveTo(x0,0); ctx.lineTo(x1,h); ctx.stroke();
+  }
+  // Central stage glow
+  const sg = ctx.createRadialGradient(w/2,h*0.1,0,w/2,h*0.1,w*0.55);
+  sg.addColorStop(0,`hsla(${hue},80%,60%,0.5)`);
+  sg.addColorStop(0.35,`hsla(${hue},70%,40%,0.12)`);
+  sg.addColorStop(1,'transparent');
+  ctx.fillStyle=sg; ctx.fillRect(0,0,w,h);
+  // Crowd
+  drawCrowd(ctx, w, h, hue, h*0.66);
+  // Fog at bottom
+  const fog = ctx.createLinearGradient(0,h*0.6,0,h);
+  fog.addColorStop(0,'transparent');
+  fog.addColorStop(1,`hsla(${hue},40%,15%,0.35)`);
+  ctx.fillStyle=fog; ctx.fillRect(0,0,w,h);
+  // Scanlines
+  for(let y=0;y<h;y+=2){ctx.fillStyle='rgba(0,0,0,0.18)';ctx.fillRect(0,y,w,1);}
+  // Top flash
+  const flash = ctx.createRadialGradient(w/2,0,0,w/2,0,w*0.35);
+  flash.addColorStop(0,`hsla(${hue},90%,75%,0.3)`);
+  flash.addColorStop(1,'transparent');
+  ctx.fillStyle=flash; ctx.fillRect(0,0,w,h);
+}
+
+function drawCrowd(ctx, w, h, hue, crowdY) {
+  const density = Math.max(8, Math.floor(w/16));
+  for(let i = 0; i < density; i++) {
+    const cx = (i/(density-1)) * w + (Math.random()-0.5)*12;
+    const raisedArm = Math.random() > 0.45;
+    const hy = crowdY + Math.sin(i*1.7)*h*0.03 - Math.random()*h*0.04;
+    const headR = 6 + Math.random()*4;
+    // silhouette dark
+    ctx.fillStyle = 'rgba(5,3,10,0.9)';
+    ctx.beginPath(); ctx.arc(cx, hy, headR, 0, Math.PI*2); ctx.fill();
+    ctx.fillRect(cx - headR*0.65, hy, headR*1.3, h*0.14);
+    if(raisedArm) {
+      ctx.beginPath(); ctx.moveTo(cx - headR*0.5, hy+headR);
+      ctx.lineTo(cx - headR*2.2, hy - h*0.08);
+      ctx.lineWidth=3; ctx.strokeStyle='rgba(5,3,10,0.88)'; ctx.stroke();
+    }
+    if(Math.random()>0.5){
+      ctx.beginPath(); ctx.moveTo(cx + headR*0.5, hy+headR);
+      ctx.lineTo(cx + headR*2.2, hy - h*0.05);
+      ctx.lineWidth=2.5; ctx.stroke();
+    }
+    // rim glow from stage light
+    ctx.beginPath(); ctx.arc(cx, hy, headR, Math.PI*1.1, Math.PI*1.9);
+    const rl = ctx.createLinearGradient(cx-headR,hy-headR,cx+headR,hy);
+    rl.addColorStop(0,`hsla(${hue},80%,65%,0.5)`); rl.addColorStop(1,'transparent');
+    ctx.strokeStyle=rl; ctx.lineWidth=1.5; ctx.stroke();
+  }
+}
+
+function drawPartyArt(ctx, w, h, type) {
+  const palettes = [
+    {bg:'#040212',l1:'rgba(120,40,240,',l2:'rgba(200,160,255,',crowd:'5,2,18',fog:'rgba(40,10,80,'},
+    {bg:'#100204',l1:'rgba(220,50,30,',l2:'rgba(255,140,100,',crowd:'16,3,4',fog:'rgba(60,15,10,'},
+    {bg:'#020a06',l1:'rgba(0,210,140,',l2:'rgba(140,255,200,',crowd:'2,10,6',fog:'rgba(0,60,40,'},
+    {bg:'#080600',l1:'rgba(210,180,0,',l2:'rgba(240,255,120,',crowd:'10,8,0',fog:'rgba(60,50,0,'},
+  ];
+  const p = palettes[type % palettes.length];
+  ctx.fillStyle = p.bg; ctx.fillRect(0,0,w,h);
+  // Laser burst from top-center
+  for(let i=0;i<10;i++){
+    const ang = Math.PI*(0.05 + i*0.09);
+    const len = h*1.3;
+    const x0=w*0.5, y0=0;
+    const x1=x0+Math.cos(ang-Math.PI/2)*len;
+    const y1=y0+Math.sin(ang-Math.PI/2)*len;
+    const lg=ctx.createLinearGradient(x0,y0,x1,y1);
+    const intensity = 0.3+Math.random()*0.5;
+    lg.addColorStop(0,p.l1+intensity+')');
+    lg.addColorStop(0.4,p.l1+(intensity*0.15)+')');
+    lg.addColorStop(1,'transparent');
+    ctx.strokeStyle=lg; ctx.lineWidth=0.8+Math.random()*2.5;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+  }
+  // Stage glow
+  const sg=ctx.createRadialGradient(w/2,0,0,w/2,0,w*0.6);
+  sg.addColorStop(0,p.l1+'0.55)'); sg.addColorStop(0.3,p.l1+'0.1)'); sg.addColorStop(1,'transparent');
+  ctx.fillStyle=sg; ctx.fillRect(0,0,w,h);
+  // Crowd silhouettes
+  const crowdTop = h * (type===0?0.6:type===1?0.55:0.62);
+  drawCrowd(ctx, w, h, type===0?270:type===1?0:type===2?160:45, crowdTop);
+  // Floor fog
+  const ff=ctx.createLinearGradient(0,h*0.7,0,h);
+  ff.addColorStop(0,'transparent'); ff.addColorStop(1,p.fog+'0.6)');
+  ctx.fillStyle=ff; ctx.fillRect(0,0,w,h);
+  // Strobe flash spots
+  for(let i=0;i<3;i++){
+    const sx=w*(0.2+i*0.3), sy=h*0.08;
+    const sg2=ctx.createRadialGradient(sx,sy,0,sx,sy,h*0.2);
+    sg2.addColorStop(0,p.l2+'0.35)'); sg2.addColorStop(1,'transparent');
+    ctx.fillStyle=sg2; ctx.fillRect(0,0,w,h);
+  }
+  // Scanlines
+  for(let y=0;y<h;y+=2){ctx.fillStyle='rgba(0,0,0,0.15)';ctx.fillRect(0,y,w,1);}
+}
+
+function drawVibeArt(ctx, w, h, idx) {
+  const types = [
+    // 0: purple rave crowd
+    ()=>{ drawPartyArt(ctx,w,h,0); },
+    // 1: red rap battle
+    ()=>{ drawPartyArt(ctx,w,h,1); },
+    // 2: teal secret
+    ()=>{ drawPartyArt(ctx,w,h,2); },
+    // 3: gold art show
+    ()=>{ drawPartyArt(ctx,w,h,3); },
+    // 4: after – mix purple/red
+    ()=>{
+      drawPartyArt(ctx,w,h,0);
+      const o=ctx.createRadialGradient(w*0.7,h*0.3,0,w*0.7,h*0.3,w*0.4);
+      o.addColorStop(0,'rgba(220,50,30,0.3)'); o.addColorStop(1,'transparent');
+      ctx.fillStyle=o; ctx.fillRect(0,0,w,h);
+    },
+    // 5: techno galpon – dark purple
+    ()=>{ drawPartyArt(ctx,w,h,0); ctx.fillStyle='rgba(0,0,0,0.3)'; ctx.fillRect(0,0,w,h); drawCrowd(ctx,w,h,270,h*0.55); }
+  ];
+  (types[idx%types.length])();
+}
+
+function sz(cv){
+  const r=cv.getBoundingClientRect();
+  cv.width=Math.max(r.width,100);
+  cv.height=Math.max(r.height,100);
+  return cv.getContext('2d');
+}
+function renderAll(){
+  document.querySelectorAll('canvas[data-portrait]').forEach(cv=>{
+    const ctx=sz(cv); drawPortrait(ctx,cv.width,cv.height,+cv.dataset.portrait);
+  });
+  document.querySelectorAll('canvas[data-art]').forEach(cv=>{
+    const ctx=sz(cv); drawPartyArt(ctx,cv.width,cv.height,+cv.dataset.art);
+  });
+  document.querySelectorAll('canvas[data-vibe]').forEach(cv=>{
+    const ctx=sz(cv); drawVibeArt(ctx,cv.width,cv.height,+cv.dataset.vibe);
+  });
+}
+window.addEventListener('load',renderAll);
+window.addEventListener('resize',()=>{clearTimeout(window._rt);window._rt=setTimeout(renderAll,180);});
+
+/* ─── QR GRID ─── */
+const qg=document.getElementById('qrGrid');
+const qPattern=[1,1,1,0,1,1,1,1,0,1,1,0,1,1,1,1,0,1,0,1,0,1,1,0,1,0,1,0,0,1,1,1,0,0,1,0,0,0,1,1,0,0,0,1,1,1,0,1,0];
+for(let i=0;i<49;i++){const d=document.createElement('div');if(qPattern[i]===0)d.style.background='transparent';qg.appendChild(d);}
+
+/* ─── SCROLL REVEAL ─── */
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');revObs.unobserve(e.target);}});
+},{threshold:0.12});
+document.querySelectorAll('.reveal,.clip-reveal').forEach(el=>revObs.observe(el));
+
+/* ─── COUNTER ANIMATION ─── */
+function animCount(el){
+  const target=parseFloat(el.dataset.count);
+  const dec=parseInt(el.dataset.dec)||0;
+  const dur=1800; const t0=performance.now();
+  const tick=now=>{
+    const p=Math.min((now-t0)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    el.textContent=(target*e).toFixed(dec).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+    if(p<1)requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+const cntObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){animCount(e.target);cntObs.unobserve(e.target);}});
+},{threshold:0.5});
+document.querySelectorAll('[data-count]').forEach(el=>cntObs.observe(el));
+
+/* ─── LOGO GLITCH ─── */
+const glitchChars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&';
+function glitch(el){
+  const orig=el.dataset.text||el.textContent; let iter=0;
+  const iv=setInterval(()=>{
+    el.textContent=orig.split('').map((c,i)=>i<iter?c:glitchChars[Math.floor(Math.random()*glitchChars.length)]).join('');
+    if(iter>=orig.length){el.textContent=orig;clearInterval(iv);} iter+=0.5;
+  },38);
+}
+document.querySelector('.brand-logo').addEventListener('mouseenter',e=>glitch(e.currentTarget));
+
+/* ─── MAGNETIC BUTTONS ─── */
+document.querySelectorAll('.magnetic').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const x=e.clientX-r.left-r.width/2; const y=e.clientY-r.top-r.height/2;
+    btn.style.transform=`translate(${x*.25}px,${y*.25}px)`;
+  });
+  btn.addEventListener('mouseleave',()=>btn.style.transform='');
+});
+
+/* ─── PARALLAX HERO ─── */
+window.addEventListener('scroll',()=>{
+  const bg=document.getElementById('heroBg');
+  if(bg&&window.scrollY<window.innerHeight) bg.style.transform=`translateY(${window.scrollY*.38}px)`;
+},{passive:true});
+
+/* ─── FILTERS (visual active state for all groups) ─── */
+document.querySelectorAll('.filters').forEach(group=>{
+  group.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      group.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+});
+
+/* ─── GENRE CARD FILTER ─── */
+function filterCards(genre){
+  const wraps=document.querySelectorAll('.card-wrap');
+  let visible=0;
+  wraps.forEach(wrap=>{
+    const genres=wrap.dataset.genres.split(',');
+    const match=genre==='all'||genres.some(g=>g.trim()===genre);
+    if(match){
+      wrap.classList.remove('card-dimmed');
+      visible++;
+    } else {
+      wrap.classList.add('card-dimmed');
+    }
+  });
+  document.getElementById('filterCount').textContent=visible;
+  const label=genre==='all'?'':'· '+genre.toUpperCase();
+  const lbl=document.getElementById('filterLabel');
+  lbl.textContent=label;
+  lbl.style.color=genre==='all'?'transparent':'var(--accent)';
+  const bento=document.querySelector('.horizontal-track');
+  let empty=document.getElementById('emptyState');
+  if(visible===0){
+    if(!empty){
+      empty=document.createElement('div');
+      empty.id='emptyState';
+      empty.style.cssText='grid-column:1/-1;padding:60px;text-align:center;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:14px;letter-spacing:.1em;color:var(--muted);border:2px dashed var(--border);';
+      empty.innerHTML='NO HAY CONVOCATORIAS PARA ESTE FILTRO — <span style="color:var(--accent)">PRONTO</span>';
+      bento.appendChild(empty);
+    }
+    empty.style.display='block';
+  }else if(empty){empty.style.display='none';}
+}
+const GENRE_MAP={'todos':'all','industrial':'industrial','hardgroove':'hardgroove','acid techno':'acid','techno mental':'mental','dark ebm':'ebm'};
+const mainFilterBar=document.querySelector('.filters');
+if(mainFilterBar){
+  mainFilterBar.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const key=this.textContent.trim().toLowerCase();
+      filterCards(GENRE_MAP[key]||'all');
+    });
+  });
+}
+
+/* ─── HORIZONTAL CAROUSEL FOCUS ─── */
+(function(){
+  const track = document.getElementById('eventsTrack');
+  if(!track) return;
+  function updateFocus(){
+    const trackRect = track.getBoundingClientRect();
+    const center = trackRect.left + trackRect.width / 2;
+    let closest = null, closestDist = Infinity;
+    track.querySelectorAll('.card-wrap').forEach(card => {
+      const r = card.getBoundingClientRect();
+      const cardCenter = r.left + r.width / 2;
+      const dist = Math.abs(cardCenter - center);
+      if(dist < closestDist){ closestDist = dist; closest = card; }
+    });
+    track.querySelectorAll('.card-wrap').forEach(c => c.classList.remove('focused'));
+    if(closest) closest.classList.add('focused');
+  }
+  track.addEventListener('scroll', updateFocus, {passive:true});
+  // Also trigger on page scroll (track might be partially visible)
+  window.addEventListener('scroll', updateFocus, {passive:true});
+  // Init on load
+  setTimeout(updateFocus, 300);
+})();
+
+/* ─── LIVE TICK FLICKER ─── */
+setInterval(()=>{
+  document.querySelectorAll('.live-tick').forEach(el=>{
+    if(Math.random()>.75){el.style.opacity='.45';setTimeout(()=>el.style.opacity='',90);}
+  });
+},2800);
+
+// Spotlight tracking
+document.addEventListener('DOMContentLoaded', () => {
+  const hero = document.querySelector('.hero');
+  if(hero) {
+    hero.addEventListener('mousemove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      hero.style.setProperty('--mouse-x', `${x}px`);
+      hero.style.setProperty('--mouse-y', `${y}px`);
+    });
+  }
+});
+
+</script>
+
+<script>
+// Scramble Text Effect (Secret Society Decryption)
+class TextScramble {
+  constructor(el) {
+    this.el = el;
+    this.chars = '!<>-_\\/[]{}—=+*^?#________';
+    this.update = this.update.bind(this);
+  }
+  setText(newText) {
+    const oldText = this.el.innerText;
+    const length = Math.max(oldText.length, newText.length);
+    const promise = new Promise((resolve) => this.resolve = resolve);
+    this.queue = [];
+    for (let i = 0; i < length; i++) {
+      const from = oldText[i] || '';
+      const to = newText[i] || '';
+      const start = Math.floor(Math.random() * 40);
+      const end = start + Math.floor(Math.random() * 40);
+      this.queue.push({ from, to, start, end });
+    }
+    cancelAnimationFrame(this.frameRequest);
+    this.frame = 0;
+    this.update();
+    return promise;
+  }
+  update() {
+    let output = '';
+    let complete = 0;
+    for (let i = 0, n = this.queue.length; i < n; i++) {
+      let { from, to, start, end, char } = this.queue[i];
+      if (this.frame >= end) {
+        complete++;
+        output += to;
+      } else if (this.frame >= start) {
+        if (!char || Math.random() < 0.28) {
+          char = this.randomChar();
+          this.queue[i].char = char;
+        }
+        output += `<span class="mono" style="color:var(--muted)">${char}</span>`;
+      } else {
+        output += from;
+      }
+    }
+    this.el.innerHTML = output;
+    if (complete === this.queue.length) {
+      this.resolve();
+    } else {
+      this.frameRequest = requestAnimationFrame(this.update);
+      this.frame++;
+    }
+  }
+  randomChar() {
+    return this.chars[Math.floor(Math.random() * this.chars.length)];
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Apply scramble to headers on load/scroll
+  const el = document.querySelector('.hero h1');
+  if(el) {
+    const originalText = el.innerHTML;
+    const cleanText = el.innerText;
+    const fx = new TextScramble(el);
+    fx.setText(cleanText).then(() => {
+      el.innerHTML = originalText; // restore spans like <span class="y">
+    });
+  }
+});
+</script>
+
+</body>
+</html>

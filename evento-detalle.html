@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.A.M. — Sociedad Anónima de Música | VOID RAVE 003</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--surface:#111;--surface-2:#1a1a1a;--surface-3:#222;--border:#2a2a2a;--border-accent:#444933;--accent:#e8ff00;--text:#e4e2e1;--muted:#c4c9ac;--blue:#0266ff;--error:#ff3333}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.5}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:var(--accent)}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'JetBrains Mono',monospace}
+.label{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1,h2,h3{font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-.02em;line-height:1}
+.matrix-bg{background-image:radial-gradient(#1a1a1a 1px,transparent 1px);background-size:20px 20px}
+.neon-glow{filter:drop-shadow(0 0 10px rgba(232,255,0,.4))}
+/* SCANNER FRAME */
+.sf{position:relative;border:1px solid var(--border)}
+.sf::before,.sf::after{content:'';position:absolute;width:14px;height:14px;border-color:var(--accent);border-style:solid;z-index:5}
+.sf::before{top:-2px;left:-2px;border-width:1px 0 0 2px}
+.sf::after{top:-2px;right:-2px;border-width:1px 2px 0 0}
+.sf .cbl{position:absolute;width:14px;height:14px;border-color:var(--accent);border-style:solid;bottom:-2px;left:-2px;border-width:0 0 2px 2px;z-index:5}
+.sf .cbr{position:absolute;width:14px;height:14px;border-color:var(--accent);border-style:solid;bottom:-2px;right:-2px;border-width:0 2px 2px 0;z-index:5}
+/* PERF */
+.perf{background-image:linear-gradient(to right,#444933 50%,transparent 50%);background-size:10px 1px;background-repeat:repeat-x;height:1px;margin:20px 0}
+/* SCANLINE */
+.scanline{position:relative;overflow:hidden}
+.scanline::after{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:rgba(232,255,0,.05);animation:sc 8s linear infinite;pointer-events:none;z-index:4}
+@keyframes sc{0%{top:0}100%{top:100%}}
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.revealed{opacity:1;transform:none}
+/* HEADER */
+header{position:fixed;top:0;left:0;right:0;height:64px;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.88);backdrop-filter:blur(14px)}
+.loc-chip{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.05em}
+.brand-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:30px;letter-spacing:.04em;color:var(--accent);cursor:pointer;text-shadow:0 0 20px rgba(232,255,0,.3)}
+.nav-links{display:flex;gap:22px}
+.nav-links a{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.nav-links a:hover,.nav-links a.active-link{color:var(--accent)}
+.header-right{display:flex;align-items:center;gap:16px}
+.icon-btn{width:40px;height:40px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:18px;transition:all .2s}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:12px 20px;border:1px solid transparent;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:none;color:var(--text)}
+.btn-accent{background:var(--accent);color:#000;border-color:var(--accent)}
+.btn-accent:hover{box-shadow:0 0 22px rgba(232,255,0,.45)}
+.btn-ghost{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.03)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:9px 14px;font-size:11px}
+.magnetic{transition:transform .15s ease}
+/* HERO IMAGE */
+.hero-img{position:relative;height:520px;margin-top:64px;overflow:hidden}
+.hero-img canvas{width:100%;height:100%;display:block;object-fit:cover}
+.hero-img .grad{position:absolute;inset:0;background:linear-gradient(to top,#000 6%,rgba(0,0,0,.2) 55%,rgba(0,0,0,.55) 100%)}
+.hero-img .panel{position:absolute;left:0;bottom:0;padding:48px 6vw;z-index:3;max-width:900px}
+.cat-tag{display:inline-block;background:var(--accent);color:#000;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.1em;padding:7px 13px;margin-bottom:18px}
+.hero-img h1{font-size:clamp(42px,8vw,88px);text-transform:uppercase;letter-spacing:-.03em;line-height:.95;margin-bottom:16px}
+.hero-by{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.07em;color:var(--accent);margin-bottom:8px}
+.hero-dc{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:14px;letter-spacing:.05em;color:var(--muted)}
+/* CLASIFICADO BANNER */
+.secret-banner{background:linear-gradient(90deg,rgba(0,200,130,.12) 0%,rgba(232,255,0,.1) 100%);border-top:1px solid var(--accent);border-bottom:1px solid var(--accent);padding:15px 28px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.1em;color:var(--accent);text-align:center;display:flex;align-items:center;justify-content:center;gap:14px}
+/* LAYOUT */
+.layout{max-width:1300px;margin:0 auto;padding:88px 6vw;display:grid;grid-template-columns:1.5fr 1fr;gap:64px;align-items:start}
+/* LEFT */
+.dt-box{border:1px solid var(--border);background:var(--surface);padding:22px;display:flex;gap:28px;flex-wrap:wrap;margin-bottom:44px}
+.dt-item{display:flex;flex-direction:column;gap:6px;min-width:80px}
+.dt-k{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.dt-v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:var(--text)}
+.block{margin-bottom:44px}
+.block .eyebrow{color:var(--accent);margin-bottom:14px;display:block}
+.block h2{font-size:28px;text-transform:uppercase;margin-bottom:16px}
+.block p{color:var(--muted);font-size:16px;line-height:1.7}
+.cal-btns{display:flex;gap:12px;flex-wrap:wrap}
+/* LINEUP */
+.lineup-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.act{border:1px solid var(--border);background:var(--surface);padding:24px;display:flex;gap:14px;align-items:flex-start;transition:border-color .2s}
+.act:hover{border-color:var(--border-accent)}
+.act.head{border-color:var(--accent)}
+.act-photo{width:52px;height:52px;flex-shrink:0;overflow:hidden;border:1px solid var(--border)}
+.act.head .act-photo{border-color:var(--accent)}
+.act-photo canvas{width:100%;height:100%;display:block}
+.act-info{}
+.act-role{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;letter-spacing:.12em;color:var(--muted);margin-bottom:7px}
+.act.head .act-role{color:var(--accent)}
+.act-name{font-family:'Syne',sans-serif;font-weight:800;font-size:21px;text-transform:uppercase;line-height:1}
+.act-sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:6px}
+/* EVENT GALLERY */
+.evt-gallery{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:44px}
+.evt-gallery-item{position:relative;height:180px;overflow:hidden;border:1px solid var(--border);transition:border-color .3s}
+.evt-gallery-item:hover{border-color:var(--accent)}
+.evt-gallery-item canvas{width:100%;height:100%;display:block;filter:grayscale(.6) contrast(1.1);transition:filter .5s,transform .5s}
+.evt-gallery-item:hover canvas{filter:grayscale(0) contrast(1);transform:scale(1.04)}
+.evt-gallery-item .gtag{position:absolute;bottom:10px;left:10px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9px;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);padding:4px 8px;border-left:1px solid var(--accent);z-index:3;text-transform:uppercase}
+/* TICKET BOX */
+.ticket-box{position:sticky;top:88px;background:var(--surface);padding:30px;border:1px solid var(--border)}
+.ticket-box h3{font-size:22px;text-transform:uppercase;margin-bottom:8px}
+.progress-wrap{margin:18px 0 22px}
+.progress-meta{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--muted);margin-bottom:9px}
+.progress{height:6px;background:var(--surface-3)}
+.progress .fill{height:100%;background:var(--accent);width:88%;transition:width 1.2s ease}
+/* TIERS */
+.tier{border:1px solid var(--border);padding:16px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;transition:border-color .2s,background .2s;cursor:pointer}
+.tier:hover{border-color:var(--border-accent);background:rgba(255,255,255,.015)}
+.tier.promo{border-color:var(--blue)}
+.tier.sold{opacity:.42;pointer-events:none;cursor:default}
+.tier-name{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;letter-spacing:.04em;margin-bottom:5px}
+.tier-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
+.badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9px;letter-spacing:.08em;padding:2px 7px;margin-left:8px;vertical-align:middle}
+.badge-b{background:var(--blue);color:#fff}
+.badge-s{background:var(--surface-3);color:var(--muted)}
+/* QTY COUNTER */
+.qty{display:flex;align-items:center;border:1px solid var(--border)}
+.qty button{width:34px;height:34px;background:none;border:none;color:var(--accent);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:18px;cursor:pointer;transition:background .15s;line-height:1}
+.qty button:hover{background:rgba(232,255,0,.1)}
+.qty .qv{width:36px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;border-left:1px solid var(--border);border-right:1px solid var(--border);padding:8px 0}
+/* SUMMARY */
+.summary{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.04em}
+.sum-row{display:flex;justify-content:space-between;padding:7px 0;color:var(--muted)}
+.sum-row.total{color:var(--accent);font-weight:700;font-size:20px;padding-top:14px;margin-top:4px;border-top:1px solid var(--border)}
+/* PAY METHODS */
+.pay-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}
+.pay-opt{border:1px solid var(--border);padding:11px 6px;text-align:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.06em;color:var(--muted);cursor:pointer;transition:all .2s}
+.pay-opt:hover,.pay-opt.selected{border-color:var(--accent);color:var(--accent)}
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:96px 28px 120px}
+.foot-giant{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(60px,13vw,130px);color:var(--accent);letter-spacing:.02em;line-height:.88;text-align:center;margin-bottom:18px}
+.foot-tag{text-align:center;margin-bottom:32px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em}
+.foot-line{height:2px;background:var(--accent);margin-bottom:52px}
+.foot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:36px;max-width:1100px;margin:0 auto 72px}
+.foot-col h4{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.12em;color:var(--accent);margin-bottom:20px}
+.foot-col a{display:block;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:13px;color:var(--muted);padding:7px 0;transition:color .2s}
+.foot-col a:hover{color:var(--text)}
+.pay-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:44px}
+.pay-pill{border:1px solid var(--border);padding:11px 20px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.08em;color:var(--muted)}
+.foot-bottom{display:flex;justify-content:space-between;max-width:1100px;margin:0 auto;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--muted);flex-wrap:wrap;gap:12px}
+.blink{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:7px;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:90;display:none;justify-content:space-around;border-top:1px solid var(--border);background:rgba(0,0,0,.94);backdrop-filter:blur(12px);padding:10px 0 14px}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9px;letter-spacing:.08em;color:var(--muted);transition:color .2s}
+.bottom-nav a.active,.bottom-nav a:hover{color:var(--accent)}
+/* RESPONSIVE */
+header{gap:12px}
+@media(max-width:1024px){
+  .loc-chip{display:none}
+  .hero-img{height:420px}
+}
+@media(max-width:960px){
+  .nav-links{display:none}
+  .layout{grid-template-columns:1fr;gap:44px;padding:64px 24px}
+  .ticket-box{position:static}
+  .lineup-grid{grid-template-columns:1fr 1fr}
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:920px){
+  .evt-gallery{grid-template-columns:1fr 1fr}
+  .bottom-nav{display:flex}
+  .brand-logo{font-size:24px}
+  .hero-img .panel{padding:28px}
+}
+@media(max-width:768px){
+  header{padding:0 16px}
+  .lineup-grid{grid-template-columns:1fr}
+  .hero-img{height:320px}
+}
+@media(max-width:600px){
+  .evt-gallery{grid-template-columns:1fr 1fr}
+  .dt-box{gap:18px}
+}
+@media(max-width:480px){
+  .foot-grid{grid-template-columns:1fr}
+  .evt-gallery{grid-template-columns:1fr}
+}
+
+/* --- MODERN UI & SECRET UX UPGRADES --- */
+.event-card, .qr-sec, .org-cta, .map-wrap, .city-panel, .icon-btn { border-width: 1px !important; border-radius: 4px; border-color: rgba(255,255,255,0.12) !important; background: rgba(17,17,17,0.6) !important; backdrop-filter: blur(8px); }
+.btn { border-width: 1px !important; border-radius: 3px; }
+.event-card:hover { border-color: var(--accent) !important; transform: translateY(-4px); }
+h1, h2, h3 { font-weight: 700 !important; letter-spacing: -0.01em !important; }
+.hero h1 { font-size: clamp(36px, 5vw, 60px) !important; }
+.org-l h2, .qr-panel h2 { font-size: clamp(30px, 4vw, 42px) !important; }
+
+/* Redacted Hover Effect */
+.redacted { position: relative; display: inline-block; background: var(--text); color: var(--text); user-select: none; transition: background 0.4s ease, color 0.4s ease; cursor: crosshair; }
+.redacted::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(0,0,0,0.8) 2px, rgba(0,0,0,0.8) 4px); opacity: 1; transition: opacity 0.4s ease; pointer-events: none; }
+.redacted:hover { background: transparent; color: var(--accent); text-shadow: 0 0 8px rgba(232,255,0,0.5); }
+.redacted:hover::after { opacity: 0; }
+
+/* Glitch Effect */
+.glitch { position: relative; display: inline-block; }
+.glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8; }
+.glitch::before { color: #0ff; z-index: -1; animation: glitch-anim 4s infinite linear alternate-reverse; }
+.glitch::after { color: #f0f; z-index: -2; animation: glitch-anim 3s infinite linear alternate-reverse; }
+@keyframes glitch-anim {
+  0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
+  20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+  40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
+  60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
+  80% { clip-path: inset(10% 0 70% 0); transform: translate(-1px, 1px); }
+  100% { clip-path: inset(30% 0 40% 0); transform: translate(1px, -1px); }
+}
+
+/* Glassmorphism & Cyber Clip */
+.cyber-clip { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
+
+
+/* --- OCCULT AESTHETIC --- */
+:root {
+  --bg-uv: rgba(50, 0, 100, 0.1);
+}
+
+/* Ultraviolet Blacklight Reveal Effect */
+.uv-reveal { position: relative; }
+.uv-reveal::after { content: attr(data-secret); position: absolute; inset: 0; color: #ff00ff; text-shadow: 0 0 10px #ff00ff; opacity: 0; transition: opacity 0.5s; pointer-events: none; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 24px; z-index: 10; mix-blend-mode: screen; }
+.uv-reveal:hover::after { opacity: 1; }
+.uv-reveal:hover canvas, .uv-reveal:hover img { filter: invert(1) hue-rotate(180deg) opacity(0.5); }
+
+/* Eye of Providence SVG background */
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' opacity='0.03'%3E%3Cpolygon points='50,10 90,90 10,90' fill='none' stroke='white' stroke-width='2'/%3E%3Ccircle cx='50' cy='60' r='15' fill='none' stroke='white' stroke-width='2'/%3E%3Ccircle cx='50' cy='60' r='5' fill='white'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+
+.mystic-border { border: 2px solid var(--accent); border-radius: 0; position: relative; }
+.mystic-border::before, .mystic-border::after { content: '👁'; position: absolute; font-size: 14px; color: var(--accent); }
+.mystic-border::before { top: -10px; left: -10px; }
+.mystic-border::after { bottom: -10px; right: -10px; }
+
+/* Parchment vibe for cards */
+.event-card { background: linear-gradient(135deg, rgba(20,20,15,0.9), rgba(10,10,5,0.9)) !important; }
+
+
+/* Mystic image filter to emulate occult/gravity falls darkness */
+.mystic-img {
+    filter: sepia(0.6) hue-rotate(245deg) saturate(2) brightness(0.65) contrast(1.4);
+    transition: filter 0.4s ease, transform 0.4s ease;
+}
+.event-card:hover .mystic-img {
+    filter: sepia(0.3) hue-rotate(245deg) saturate(1.5) brightness(0.9) contrast(1.2);
+}
+
+
+/* Fix card images */
+.card-media img, .gallery-item img, .mystic-img, .gsc {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+
+/* --- BREATHABILITY / PADDING FIX --- */
+.sec { padding-left: 6vw !important; padding-right: 6vw !important; }
+.hero-content { padding-right: 6vw !important; padding-left: 6vw !important; }
+header { padding-left: 6vw !important; padding-right: 6vw !important; }
+.portal-sec { padding-left: 6vw !important; padding-right: 6vw !important; }
+
+@media(max-width: 900px) {
+  .sec, .hero-content, header, .portal-sec { padding-left: 4vw !important; padding-right: 4vw !important; }
+}
+@media(max-width: 500px) {
+  .sec, .hero-content, header, .portal-sec { padding-left: 6vw !important; padding-right: 6vw !important; }
+}
+
+</style>
+</head>
+<body class="matrix-bg">
+
+<header style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; padding: 0 4vw !important;">
+  <div class="header-left" style="display: flex; align-items: center; gap: 24px;">
+    <a href="index.html" class="brand-logo" style="text-decoration: none;">S.A.M.</a>
+    <div class="loc-chip mono" style="margin-top: 4px; font-size: 11px;">📍 <span class='redacted'>Terminal 01: BOG</span></div>
+  </div>
+  
+  <nav class="nav-links" style="display: flex; justify-content: center; gap: 28px;">
+    <a href="eventos.html">EVENTOS</a>
+    <a href="index.html#map">LUGARES DE ENCUENTRO</a>
+    <a href="index.html#org">ÚNETE A LA SOCIEDAD</a>
+  </nav>
+  
+  <div class="header-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 16px;">
+    <a href="acceso.html" class="btn btn-ghost" style="padding: 10px 18px; border-color: var(--accent); color: var(--accent);">INICIAR SESIÓN</a>
+    <button class="btn btn-accent neon-glow" onclick="location.href='acceso.html'"><span class="crear-txt">PUBLICAR EVENTO</span><span class="crear-plus">+</span></button>
+  </div>
+</header>
+
+<!-- HERO IMAGE -->
+<section class="hero-img scanline">
+  <canvas data-hero="0"></canvas>
+  <div class="grad"></div>
+  <div class="panel">
+    <span class="cat-tag">INDUSTRIAL · UNDERGROUND</span>
+    <h1>VOID RAVE 003</h1>
+    <div class="hero-by">ORGANIZA · COLECTIVO NÓDULO</div>
+    <div class="hero-dc">22 JUN 2026 · 22:00 — 06:00 · <span class='redacted'>BOG / CHAPINERO</span></div>
+  </div>
+</section>
+
+<div class="secret-banner">
+  <span>⚠</span>
+  UBICACIÓN CLASIFICADOA — REVELADA 4 HORAS ANTES DEL EVENTO · VÍA APP S.A.M.
+  <span>⚠</span>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="layout">
+
+  <!-- ─── LEFT COLUMN ─── -->
+  <div>
+
+    <!-- Date/Info block -->
+    <div class="dt-box reveal">
+      <div class="dt-item"><span class="dt-k">FECHA</span><span class="dt-v">22.06.2026</span></div>
+      <div class="dt-item"><span class="dt-k">PUERTAS</span><span class="dt-v">22:00</span></div>
+      <div class="dt-item"><span class="dt-k">CIERRE</span><span class="dt-v">06:00</span></div>
+      <div class="dt-item"><span class="dt-k">CIUDAD</span><span class="dt-v">BOG</span></div>
+      <div class="dt-item"><span class="dt-k">ZONA</span><span class="dt-v">CHAPINERO</span></div>
+      <div class="dt-item"><span class="dt-k">EDAD</span><span class="dt-v">+18</span></div>
+    </div>
+
+    <!-- Description -->
+    <div class="block reveal">
+      <span class="eyebrow label">THE RITUAL</span>
+      <h2>SOBRE EL EVENTO</h2>
+      <p>VOID RAVE regresa con su tercera entrega: una noche de techno industrial sin concesiones en un galpón sin nombre del corazón de Chapinero. Sistema de sonido de alto impacto, visuales reactivas, iluminación de gran formato y un line-up que define el sonido más crudo del underground colombiano.</p>
+      <p style="margin-top:14px">No hay reventa. No hay filas. Tu QR es tu llave. Ubicación revelada 4 horas antes vía S.A.M.</p>
+    </div>
+
+    <!-- Calendar add -->
+    <div class="block reveal">
+      <div class="cal-btns">
+        <button class="btn btn-ghost btn-sm">+ GOOGLE CALENDAR</button>
+        <button class="btn btn-ghost btn-sm">+ APPLE CALENDAR</button>
+      </div>
+    </div>
+
+    <!-- LINE-UP -->
+    <div class="block reveal">
+      <span class="eyebrow label">LINE-UP</span>
+      <h2>QUIÉN SUENA</h2>
+      <div class="lineup-grid" style="margin-top:20px">
+
+        <div class="act head">
+          <div class="act-photo"><canvas data-portrait="270"></canvas></div>
+          <div class="act-info">
+            <div class="act-role">HEADLINER</div>
+            <div class="act-name">VØLTA</div>
+            <div class="act-sub">BOG · INDUSTRIAL INDUSTRIAL</div>
+          </div>
+        </div>
+
+        <div class="act">
+          <div class="act-photo"><canvas data-portrait="0"></canvas></div>
+          <div class="act-info">
+            <div class="act-role">LOCAL GUEST</div>
+            <div class="act-name">NXMADE</div>
+            <div class="act-sub">MDE · HARD GROOVE</div>
+          </div>
+        </div>
+
+        <div class="act">
+          <div class="act-photo"><canvas data-portrait="200"></canvas></div>
+          <div class="act-info">
+            <div class="act-role">SUPPORT</div>
+            <div class="act-name">DARK MOTOR</div>
+            <div class="act-sub">CLO · ACID INDUSTRIAL</div>
+          </div>
+        </div>
+
+        <div class="act">
+          <div class="act-photo"><canvas data-portrait="45"></canvas></div>
+          <div class="act-info">
+            <div class="act-role">B2B CLOSING</div>
+            <div class="act-name">LILA SECT</div>
+            <div class="act-sub">BOG · EXPERIMENTALERIMENTAL</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- EVENT GALLERY -->
+    <div class="block reveal">
+      <span class="eyebrow label">EDICIONES ANTERIORES</span>
+      <h2>VOID RAVE EN IMÁGENES</h2>
+      <div class="evt-gallery" style="margin-top:20px">
+        <div class="evt-gallery-item scanline">
+          <canvas data-gallery="0"></canvas>
+          <div class="gtag">VOID RAVE 001 · 2025</div>
+        </div>
+        <div class="evt-gallery-item scanline">
+          <canvas data-gallery="1"></canvas>
+          <div class="gtag">VOID RAVE 002 · 2025</div>
+        </div>
+        <div class="evt-gallery-item scanline">
+          <canvas data-gallery="2"></canvas>
+          <div class="gtag">AFTER · 06:00AM</div>
+        </div>
+        <div class="evt-gallery-item scanline">
+          <canvas data-gallery="0"></canvas>
+          <div class="gtag">CROWD · CHAPINERO</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ─── RIGHT COLUMN — TICKET BOX ─── -->
+  <div>
+    <div class="ticket-box sf reveal">
+      <span class="cbl"></span><span class="cbr"></span>
+
+      <h3>SELECT ACCESS</h3>
+      <p class="label" style="margin-top:4px;margin-bottom:0">VOID RAVE 003 · 22 JUN 2026</p>
+
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span>TIER 2 ACTIVO</span>
+          <span id="pct">88% VENDIDO</span>
+        </div>
+        <div class="progress"><div class="fill" id="progFill"></div></div>
+      </div>
+
+      <!-- TIER 1: General -->
+      <div class="tier" id="tier0" onclick="selectTier(this)">
+        <div>
+          <div class="tier-name">GENERAL</div>
+          <div class="tier-sub">Acceso pista · $45.000 + fee</div>
+        </div>
+        <div class="qty" onclick="event.stopPropagation()">
+          <button class="qty-btn" data-tier="0" data-d="-1">−</button>
+          <span class="qv" id="q0">1</span>
+          <button class="qty-btn" data-tier="0" data-d="1">+</button>
+        </div>
+      </div>
+
+      <!-- TIER 2: Bundle -->
+      <div class="tier promo" id="tier1" onclick="selectTier(this)">
+        <div>
+          <div class="tier-name">UNDERGROUND BUNDLE <span class="badge badge-b">PROMO</span></div>
+          <div class="tier-sub">2 entradas · $80.000 + fee</div>
+        </div>
+        <div class="qty" onclick="event.stopPropagation()">
+          <button class="qty-btn" data-tier="1" data-d="-1">−</button>
+          <span class="qv" id="q1">0</span>
+          <button class="qty-btn" data-tier="1" data-d="1">+</button>
+        </div>
+      </div>
+
+      <!-- TIER 3: Sold out -->
+      <div class="tier sold">
+        <div>
+          <div class="tier-name">BACKSTAGE PASS <span class="badge badge-s">SOLD OUT</span></div>
+          <div class="tier-sub">Acceso total + camerinos</div>
+        </div>
+        <div class="qty">
+          <button>−</button>
+          <span class="qv">0</span>
+          <button>+</button>
+        </div>
+      </div>
+
+      <div class="perf"></div>
+
+      <!-- SUMMARY -->
+      <div class="summary">
+        <div class="sum-row"><span>SUBTOTAL</span><span id="subtotal">$45.000</span></div>
+        <div class="sum-row"><span>SERVICIO SOCIEDAD ANÓNIMA DE MÚSICA</span><span id="fee">$1.500</span></div>
+        <div class="sum-row total"><span>TOTAL</span><span id="total">$46.500</span></div>
+      </div>
+
+      <!-- PAYMENT METHODS -->
+      <div class="label" style="margin-top:20px;margin-bottom:10px">PAGAR CON</div>
+      <div class="pay-grid">
+        <div class="pay-opt selected" onclick="selPay(this)">PSE</div>
+        <div class="pay-opt" onclick="selPay(this)">NEQUI</div>
+        <div class="pay-opt" onclick="selPay(this)">DAVIPLATA</div>
+      </div>
+
+      <button class="btn btn-accent neon-glow magnetic" style="width:100%;margin-top:8px;font-size:13px;padding:16px">
+        OBTENER PASES CIFRADOS →
+      </button>
+
+      <p class="label" style="text-align:center;margin-top:14px;font-size:10px">
+        PAGO SEGURO · QR DIGITAL INMEDIATO · SIN REVENTA
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-giant">S.A.M.</div>
+  <div style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.2em; color:var(--muted); margin-top:-10px; margin-bottom:24px; text-transform:uppercase;">Sociedad Anónima de Música</div>
+  <div class="foot-tag">SMART ACCESS MAP · COLOMBIA UNDERGROUND · 2026</div>
+  <div class="foot-line"></div>
+  <div class="foot-grid" style="max-width:1100px;margin:0 auto 52px">
+    <div class="foot-col"><h4>PLATAFORMA</h4><a href="eventos.html">Eventos</a><a href="index.html#map">Mapa</a><a href="evento-detalle.html">Tickets</a><a href="#">Cómo funciona</a></div>
+    <div class="foot-col"><h4>EL CÍRCULO</h4><a href="#">Crear evento</a><a href="#">Liquidez 24H</a><a href="#">Comisiones</a><a href="#">Soporte</a></div>
+    <div class="foot-col"><h4>CIUDADES</h4><a href="#">Bogotá</a><a href="#">Medellín</a><a href="#">Cali</a><a href="#">Próximas</a></div>
+    <div class="foot-col"><h4>LEGAL</h4><a href="#">Términos</a><a href="#">Privacidad</a><a href="#">Reembolsos</a><a href="#">Contacto</a></div>
+  </div>
+  <div class="pay-row"><div class="pay-pill">PSE</div><div class="pay-pill">NEQUI</div><div class="pay-pill">DAVIPLATA</div><div class="pay-pill">BOLD</div><div class="pay-pill">WOMPI</div></div>
+  <div class="foot-bottom" style="max-width:1100px;margin:0 auto"><div>© 2026 S.A.M. — TODOS LOS DERECHOS RESERVADOS</div><div><span class="blink"></span>BOG NODE: ONLINE</div></div>
+</footer>
+
+<nav class="bottom-nav">
+  <a href="index.html"><span>◎</span>DISCOVER</a>
+  <a href="index.html#map"><span>⊕</span>MAP</a>
+  <a href="evento-detalle.html" class="active"><span>⊟</span>PASES CIFRADOS</a>
+  <a href="#"><span>◉</span>PROFILE</a>
+</nav>
+
+<script>
+/* ─── CANVAS ENGINE ─── */
+function drawCrowd(ctx,w,h,hue,crowdY){
+  const n=Math.max(8,Math.floor(w/14));
+  for(let i=0;i<n;i++){
+    const cx=(i/(n-1))*w+(Math.random()-.5)*10;
+    const hy=crowdY+Math.sin(i*1.8)*h*.03-Math.random()*h*.04;
+    const hr=5+Math.random()*4;
+    ctx.fillStyle='rgba(4,2,10,.9)';
+    ctx.beginPath();ctx.arc(cx,hy,hr,0,Math.PI*2);ctx.fill();
+    ctx.fillRect(cx-hr*.65,hy,hr*1.3,h*.12);
+    if(Math.random()>.45){
+      ctx.beginPath();ctx.moveTo(cx-hr*.5,hy+hr);ctx.lineTo(cx-hr*2.2,hy-h*.08);
+      ctx.lineWidth=2.5;ctx.strokeStyle='rgba(4,2,10,.88)';ctx.stroke();
+    }
+    ctx.beginPath();ctx.arc(cx,hy,hr,Math.PI*1.1,Math.PI*1.9);
+    const rl=ctx.createLinearGradient(cx-hr,hy-hr,cx+hr,hy);
+    rl.addColorStop(0,`hsla(${hue},80%,65%,0.45)`);rl.addColorStop(1,'transparent');
+    ctx.strokeStyle=rl;ctx.lineWidth=1.5;ctx.stroke();
+  }
+}
+function drawParty(ctx,w,h,t){
+  const P=[
+    {bg:'#040212',hue:270,l:'rgba(120,40,240,',l2:'rgba(200,160,255,',fog:'rgba(40,10,80,'},
+    {bg:'#100204',hue:0,l:'rgba(220,50,30,',l2:'rgba(255,140,100,',fog:'rgba(60,15,10,'},
+    {bg:'#020a06',hue:160,l:'rgba(0,210,140,',l2:'rgba(140,255,200,',fog:'rgba(0,60,40,'},
+    {bg:'#080600',hue:45,l:'rgba(210,180,0,',l2:'rgba(240,255,120,',fog:'rgba(60,50,0,'},
+  ];
+  const p=P[t%P.length];
+  ctx.fillStyle=p.bg;ctx.fillRect(0,0,w,h);
+  for(let i=0;i<10;i++){
+    const ang=Math.PI*(.05+i*.09);
+    const x0=w*.5,y0=0,x1=x0+Math.cos(ang-Math.PI/2)*h*1.3,y1=y0+Math.sin(ang-Math.PI/2)*h*1.3;
+    const lg=ctx.createLinearGradient(x0,y0,x1,y1);
+    const iv=.3+Math.random()*.5;
+    lg.addColorStop(0,p.l+iv+')');lg.addColorStop(.5,p.l+(iv*.1)+')');lg.addColorStop(1,'transparent');
+    ctx.strokeStyle=lg;ctx.lineWidth=.8+Math.random()*2.5;
+    ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  }
+  const sg=ctx.createRadialGradient(w/2,0,0,w/2,0,w*.6);
+  sg.addColorStop(0,p.l+'0.5)');sg.addColorStop(.35,p.l+'0.08)');sg.addColorStop(1,'transparent');
+  ctx.fillStyle=sg;ctx.fillRect(0,0,w,h);
+  drawCrowd(ctx,w,h,p.hue,h*.62);
+  const ff=ctx.createLinearGradient(0,h*.62,0,h);
+  ff.addColorStop(0,'transparent');ff.addColorStop(1,p.fog+'0.5)');
+  ctx.fillStyle=ff;ctx.fillRect(0,0,w,h);
+  for(let i=0;i<3;i++){
+    const sx=w*(.2+i*.3),sy=h*.07;
+    const sp=ctx.createRadialGradient(sx,sy,0,sx,sy,h*.18);
+    sp.addColorStop(0,p.l2+'0.28)');sp.addColorStop(1,'transparent');
+    ctx.fillStyle=sp;ctx.fillRect(0,0,w,h);
+  }
+  for(let y=0;y<h;y+=2){ctx.fillStyle='rgba(0,0,0,.15)';ctx.fillRect(0,y,w,1);}
+}
+function drawArtistPortrait(ctx,w,h,hue){
+  ctx.fillStyle='#030208';ctx.fillRect(0,0,w,h);
+  const g=ctx.createRadialGradient(w/2,h*.3,0,w/2,h*.3,w*.7);
+  g.addColorStop(0,`hsla(${hue},70%,40%,.45)`);g.addColorStop(1,'transparent');
+  ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+  // Laser lines
+  for(let i=0;i<4;i++){
+    const lg=ctx.createLinearGradient(w/2,0,w/2+(i%2===0?1:-1)*w*.4,h);
+    lg.addColorStop(0,`hsla(${hue},85%,65%,.35)`);lg.addColorStop(1,'transparent');
+    ctx.strokeStyle=lg;ctx.lineWidth=.7;
+    ctx.beginPath();ctx.moveTo(w/2,0);ctx.lineTo(w/2+(i%2===0?1:-1)*w*.4,h);ctx.stroke();
+  }
+  // Grid
+  ctx.strokeStyle=`hsla(${hue},40%,30%,.08)`;ctx.lineWidth=.5;
+  for(let x=0;x<w;x+=w/5){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+  for(let y=0;y<h;y+=h/4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+  // Head silhouette
+  ctx.fillStyle=`hsla(${hue},30%,8%,.85)`;
+  ctx.beginPath();ctx.ellipse(w/2,h*.32,w*.16,w*.19,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.moveTo(w*.28,h+2);ctx.lineTo(w*.36,h*.5);ctx.lineTo(w*.64,h*.5);ctx.lineTo(w*.72,h+2);ctx.fill();
+  // Rim light
+  ctx.beginPath();ctx.ellipse(w/2,h*.32,w*.16,w*.19,0,Math.PI*.9,Math.PI*2.1);
+  const rl=ctx.createLinearGradient(w*.3,h*.2,w*.7,h*.4);
+  rl.addColorStop(0,`hsla(${hue},90%,70%,.5)`);rl.addColorStop(1,'transparent');
+  ctx.strokeStyle=rl;ctx.lineWidth=2;ctx.stroke();
+  // Scanlines
+  for(let y=0;y<h;y+=2){ctx.fillStyle='rgba(0,0,0,.2)';ctx.fillRect(0,y,w,1);}
+  // Flash top
+  const fl=ctx.createRadialGradient(w/2,0,0,w/2,0,w*.3);
+  fl.addColorStop(0,`hsla(${hue},90%,75%,.3)`);fl.addColorStop(1,'transparent');
+  ctx.fillStyle=fl;ctx.fillRect(0,0,w,h);
+}
+function sz(cv){
+  const r=cv.getBoundingClientRect();
+  cv.width=Math.max(r.width,60);cv.height=Math.max(r.height,60);
+  return cv.getContext('2d');
+}
+function renderAll(){
+  document.querySelectorAll('canvas[data-hero]').forEach(cv=>{
+    const ctx=sz(cv);drawParty(ctx,cv.width,cv.height,+cv.dataset.hero);
+  });
+  document.querySelectorAll('canvas[data-portrait]').forEach(cv=>{
+    const ctx=sz(cv);drawArtistPortrait(ctx,cv.width,cv.height,+cv.dataset.portrait);
+  });
+  document.querySelectorAll('canvas[data-gallery]').forEach(cv=>{
+    const ctx=sz(cv);drawParty(ctx,cv.width,cv.height,+cv.dataset.gallery);
+  });
+}
+window.addEventListener('load',renderAll);
+window.addEventListener('resize',()=>{clearTimeout(window._rt);window._rt=setTimeout(renderAll,180);});
+
+/* ─── SCROLL REVEAL ─── */
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');ro.unobserve(e.target);}});
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+/* ─── LOGO GLITCH ─── */
+const gc='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&';
+function glitch(el){const o=el.dataset.text||el.textContent;let i=0;const iv=setInterval(()=>{el.textContent=o.split('').map((c,j)=>j<i?c:gc[Math.floor(Math.random()*gc.length)]).join('');if(i>=o.length){el.textContent=o;clearInterval(iv);}i+=.5;},38);}
+document.querySelector('.brand-logo').addEventListener('mouseenter',e=>glitch(e.currentTarget));
+
+/* ─── MAGNETIC BUTTON ─── */
+document.querySelectorAll('.magnetic').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    btn.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.2}px,${(e.clientY-r.top-r.height/2)*.2}px)`;
+  });
+  btn.addEventListener('mouseleave',()=>btn.style.transform='');
+});
+
+/* ─── PAYMENT SELECT ─── */
+function selPay(el){document.querySelectorAll('.pay-opt').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');}
+
+/* ─── TIER SELECT ─── */
+function selectTier(el){/* visual feedback only */}
+
+/* ─── TICKET QTY + CALC ─── */
+const PRICES=[45000,80000];
+function fmt(n){return '$'+n.toLocaleString('es-CO');}
+function recalc(){
+  let sub=0;
+  document.querySelectorAll('.qty-btn').forEach(b=>{});
+  const q0=parseInt(document.getElementById('q0').textContent)||0;
+  const q1=parseInt(document.getElementById('q1').textContent)||0;
+  sub=q0*PRICES[0]+q1*PRICES[1];
+  const fee=sub>0?1500:0;
+  document.getElementById('subtotal').textContent=fmt(sub);
+  document.getElementById('fee').textContent=fmt(fee);
+  document.getElementById('total').textContent=fmt(sub+fee);
+}
+document.querySelectorAll('.qty-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    const tier=this.dataset.tier;
+    const d=parseInt(this.dataset.d);
+    const span=document.getElementById('q'+tier);
+    let v=parseInt(span.textContent)||0;
+    v=Math.min(10,Math.max(0,v+d));
+    span.textContent=v;
+    recalc();
+  });
+});
+recalc();
+
+/* ─── PROGRESS BAR ANIMATION ─── */
+setTimeout(()=>{const f=document.getElementById('progFill');if(f)f.style.width='88%';},400);
+</script>
+
+<script>
+// Scramble Text Effect (Secret Society Decryption)
+class TextScramble {
+  constructor(el) {
+    this.el = el;
+    this.chars = '!<>-_\\/[]{}—=+*^?#________';
+    this.update = this.update.bind(this);
+  }
+  setText(newText) {
+    const oldText = this.el.innerText;
+    const length = Math.max(oldText.length, newText.length);
+    const promise = new Promise((resolve) => this.resolve = resolve);
+    this.queue = [];
+    for (let i = 0; i < length; i++) {
+      const from = oldText[i] || '';
+      const to = newText[i] || '';
+      const start = Math.floor(Math.random() * 40);
+      const end = start + Math.floor(Math.random() * 40);
+      this.queue.push({ from, to, start, end });
+    }
+    cancelAnimationFrame(this.frameRequest);
+    this.frame = 0;
+    this.update();
+    return promise;
+  }
+  update() {
+    let output = '';
+    let complete = 0;
+    for (let i = 0, n = this.queue.length; i < n; i++) {
+      let { from, to, start, end, char } = this.queue[i];
+      if (this.frame >= end) {
+        complete++;
+        output += to;
+      } else if (this.frame >= start) {
+        if (!char || Math.random() < 0.28) {
+          char = this.randomChar();
+          this.queue[i].char = char;
+        }
+        output += `<span class="mono" style="color:var(--muted)">${char}</span>`;
+      } else {
+        output += from;
+      }
+    }
+    this.el.innerHTML = output;
+    if (complete === this.queue.length) {
+      this.resolve();
+    } else {
+      this.frameRequest = requestAnimationFrame(this.update);
+      this.frame++;
+    }
+  }
+  randomChar() {
+    return this.chars[Math.floor(Math.random() * this.chars.length)];
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Apply scramble to headers on load/scroll
+  const el = document.querySelector('.hero h1');
+  if(el) {
+    const originalText = el.innerHTML;
+    const cleanText = el.innerText;
+    const fx = new TextScramble(el);
+    fx.setText(cleanText).then(() => {
+      el.innerHTML = originalText; // restore spans like <span class="y">
+    });
+  }
+});
+</script>
+
+</body>
+</html>

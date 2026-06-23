@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.A.M. — Sonic Calendar · Colombia Underground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#000;--surface:#111;--surface-2:#1a1a1a;--border:#2a2a2a;--border-accent:#444933;--accent:#e8ff00;--text:#e4e2e1;--muted:#c4c9ac;--blue:#0266ff;--error:#ff3333}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;line-height:1.5}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#000}::-webkit-scrollbar-thumb{background:var(--accent)}
+a{color:inherit;text-decoration:none}
+.mono{font-family:'JetBrains Mono',monospace}
+.label{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1,h2,h3{font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-.02em;line-height:1}
+.matrix-bg{background-image:radial-gradient(#1a1a1a 1px,transparent 1px);background-size:20px 20px}
+.neon-glow{filter:drop-shadow(0 0 10px rgba(232,255,0,.4))}
+.sf{position:relative;border:1px solid var(--border)}
+.sf::before,.sf::after{content:'';position:absolute;width:14px;height:14px;border-color:var(--accent);border-style:solid;z-index:5}
+.sf::before{top:-2px;left:-2px;border-width:1px 0 0 2px}
+.sf::after{top:-2px;right:-2px;border-width:1px 2px 0 0}
+.sf .cbl{position:absolute;width:14px;height:14px;border-color:var(--accent);border-style:solid;bottom:-2px;left:-2px;border-width:0 0 2px 2px;z-index:5}
+.sf .cbr{position:absolute;width:14px;height:14px;border-color:var(--accent);border-style:solid;bottom:-2px;right:-2px;border-width:0 2px 2px 0;z-index:5}
+.scanline{position:relative;overflow:hidden}
+.scanline::after{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:rgba(232,255,0,.05);animation:sc 8s linear infinite;pointer-events:none;z-index:4}
+@keyframes sc{0%{top:0}100%{top:100%}}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease}
+.reveal.revealed{opacity:1;transform:none}
+.clip-reveal{clip-path:inset(0 100% 0 0);transition:clip-path .9s cubic-bezier(.77,0,.175,1)}
+.clip-reveal.revealed{clip-path:inset(0 0% 0 0)}
+/* HEADER */
+header{position:fixed;top:0;left:0;right:0;height:64px;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.88);backdrop-filter:blur(14px)}
+.loc-chip{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.05em}
+.brand-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:30px;letter-spacing:.04em;color:var(--accent);cursor:pointer;text-shadow:0 0 20px rgba(232,255,0,.3)}
+.nav-links{display:flex;gap:22px}
+.nav-links a{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);transition:color .2s}
+.nav-links a:hover,.nav-links a.active-link{color:var(--accent)}
+.header-right{display:flex;align-items:center;gap:16px}
+.icon-btn{width:40px;height:40px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:18px;transition:all .2s}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:12px 20px;border:1px solid transparent;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;background:none;color:var(--text)}
+.btn-accent{background:var(--accent);color:#000;border-color:var(--accent)}
+.btn-accent:hover{box-shadow:0 0 20px rgba(232,255,0,.4)}
+.btn-ghost{border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.03)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+/* HERO */
+.hero{min-height:80vh;padding:100px 28px 64px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
+.hero-grad{position:absolute;inset:0;background:linear-gradient(to top,#000 12%,rgba(0,0,0,.55) 55%,rgba(0,0,0,.7) 100%)}
+.hero-content{position:relative;z-index:2;max-width:1100px}
+.hero h1{font-size:clamp(64px,13vw,148px);text-transform:uppercase;letter-spacing:-.04em;line-height:.86;margin:16px 0 28px}
+.hero h1 .y{color:var(--accent)}
+.hero-sub{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:15px;letter-spacing:.05em;color:var(--muted);max-width:580px;margin-bottom:28px;line-height:1.6}
+.chips{display:flex;gap:10px;flex-wrap:wrap}
+.filter-btn{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.1em;padding:9px 16px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .2s}
+.filter-btn:hover{border-color:var(--border-accent);color:var(--text)}
+.filter-btn.active{background:var(--accent);color:#000;border-color:var(--accent)}
+.sec{padding:110px 40px;position:relative}
+.wrap{max-width:1300px;margin:0 auto}
+.eyebrow{color:var(--accent);display:block;margin-bottom:14px}
+/* FEATURED */
+.feat-wrap{max-width:1300px;margin:0 auto}
+.featured{position:relative;height:560px;overflow:hidden;border:1px solid var(--border);transition:border-color .3s}
+.disc-row.row-hidden{opacity:0;transform:translateX(-12px);pointer-events:none;max-height:0;overflow:hidden;padding:0;border-bottom-width:0}
+.featured:hover{border-color:var(--accent)}
+.featured canvas{width:100%;height:100%;display:block;filter:grayscale(.3) contrast(1.1);transition:filter .5s}
+.featured:hover canvas{filter:grayscale(0) contrast(1)}
+.feat-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.97) 0%,rgba(0,0,0,.5) 50%,transparent 100%)}
+.feat-content{position:absolute;left:0;right:0;bottom:0;padding:44px;z-index:3}
+.live-badge{display:inline-flex;align-items:center;gap:8px;background:var(--error);color:#fff;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.1em;padding:7px 13px;margin-bottom:18px;width:max-content}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#fff;animation:blink 1s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+.feat-content h2{font-size:clamp(36px,6vw,68px);text-transform:uppercase;margin-bottom:16px;line-height:.95}
+.feat-meta{display:flex;gap:28px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.06em;color:var(--muted);margin-bottom:20px}
+.feat-meta span{display:flex;align-items:center;gap:8px}
+.feat-meta b{color:var(--text)}
+.feat-row{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.feat-price{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:28px;color:var(--accent)}
+/* STRIP — horizontal photo scroll */
+.strip-wrap{padding:0 0 0 28px;overflow:hidden}
+.photo-strip{display:flex;gap:6px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none;padding-bottom:2px}
+.photo-strip::-webkit-scrollbar{display:none}
+.strip-item{flex-shrink:0;width:220px;height:170px;position:relative;overflow:hidden;cursor:pointer;border:1px solid var(--border);transition:border-color .3s}
+.strip-item:hover{border-color:var(--accent)}
+.strip-item canvas{width:100%;height:100%;display:block;filter:grayscale(.7) contrast(1.1);transition:filter .4s,transform .4s}
+.strip-item:hover canvas{filter:grayscale(0) contrast(1);transform:scale(1.06)}
+.strip-item .stag{position:absolute;bottom:10px;left:10px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9px;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);padding:4px 8px;border-left:1px solid var(--accent);z-index:3;text-transform:uppercase}
+/* DISCOVERY LIST */
+.disc-list{max-width:1300px;margin:0 auto;border-top:1px solid var(--border)}
+.disc-row{display:grid;grid-template-columns:100px 130px 1fr 180px;gap:32px;align-items:center;padding:24px 20px;border-bottom:1px solid var(--border);border-left:4px solid transparent;transition:border-left-color .2s,background .2s,opacity .35s ease,transform .35s ease;cursor:pointer;text-decoration:none;color:inherit}
+.disc-row:hover{border-left-color:var(--accent);background:rgba(255,255,255,.025)}
+.disc-date{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:30px;color:var(--text);line-height:1}
+.disc-date span{display:block;font-size:11px;color:var(--muted);letter-spacing:.1em;margin-top:5px}
+.disc-thumb{width:130px;height:90px;overflow:hidden;border:1px solid var(--border);flex-shrink:0}
+.disc-thumb canvas{width:100%;height:100%;display:block;filter:grayscale(.8) contrast(1.15);transition:filter .4s}
+.disc-row:hover .disc-thumb canvas{filter:grayscale(0) contrast(1)}
+.disc-main h3{font-size:22px;text-transform:uppercase;margin-bottom:9px;line-height:1.1}
+.disc-tags{display:flex;gap:10px;flex-wrap:wrap}
+.disc-tag{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;letter-spacing:.08em;color:var(--muted);padding:3px 8px;border:1px solid var(--border)}
+.disc-tag.genre{color:var(--accent);border-color:var(--border-accent)}
+.disc-end{display:flex;align-items:center;justify-content:flex-end;gap:20px}
+.disc-price{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:18px;color:var(--accent)}
+.disc-arrow{font-size:20px;color:var(--muted);transition:color .2s,transform .2s}
+.disc-row:hover .disc-arrow{color:var(--accent);transform:translateX(4px)}
+/* DIVIDER */
+.divider{height:2px;background:var(--border)}
+/* NEWSLETTER */
+.pulse-cta{max-width:900px;margin:0 auto;border:1px solid var(--accent);padding:60px 44px;text-align:center;position:relative}
+.pulse-cta::before{content:'';position:absolute;inset:-6px;border:1px solid rgba(232,255,0,.2);pointer-events:none}
+.pulse-cta h2{font-size:clamp(30px,5vw,56px);text-transform:uppercase;margin-bottom:16px}
+.pulse-cta p{color:var(--muted);margin-bottom:32px;font-size:16px}
+.sub-form{display:flex;max-width:520px;margin:0 auto}
+.sub-form input{flex:1;background:none;border:none;border-bottom:1px solid var(--border);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:.06em;padding:14px 6px;outline:none;transition:border-color .2s}
+.sub-form input::placeholder{color:var(--muted)}
+.sub-form input:focus{border-bottom-color:var(--accent)}
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:96px 28px 120px}
+.foot-giant{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(60px,13vw,130px);color:var(--accent);letter-spacing:.02em;line-height:.88;text-align:center;margin-bottom:18px}
+.foot-tag{text-align:center;margin-bottom:32px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em}
+.foot-line{height:2px;background:var(--accent);margin-bottom:52px}
+.foot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:36px;max-width:1100px;margin:0 auto 72px}
+.foot-col h4{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.12em;color:var(--accent);margin-bottom:20px}
+.foot-col a{display:block;font-family:'JetBrains Mono',monospace;font-weight:500;font-size:13px;color:var(--muted);padding:7px 0;transition:color .2s}
+.foot-col a:hover{color:var(--text)}
+.pay-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:44px}
+.pay-pill{border:1px solid var(--border);padding:11px 20px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.08em;color:var(--muted)}
+.foot-bottom{display:flex;justify-content:space-between;max-width:1100px;margin:0 auto;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--muted);flex-wrap:wrap;gap:12px}
+.blink{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:7px;animation:blink 1.4s ease-in-out infinite}
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:90;display:none;justify-content:space-around;border-top:1px solid var(--border);background:rgba(0,0,0,.94);backdrop-filter:blur(12px);padding:10px 0 14px}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:9px;letter-spacing:.08em;color:var(--muted);transition:color .2s}
+.bottom-nav a.active,.bottom-nav a:hover{color:var(--accent)}
+header{gap:12px}
+@media(max-width:1024px){
+  .loc-chip{display:none}
+  .featured{height:420px}
+  .disc-row{grid-template-columns:80px 110px 1fr;gap:24px}
+  .disc-end{display:none}
+}
+@media(max-width:960px){
+  .foot-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:920px){
+  .sec{padding:64px 20px}
+  .nav-links{display:none}
+  .hero h1{font-size:64px}
+  .disc-row{grid-template-columns:70px 1fr;gap:18px}
+  .disc-thumb{display:none}
+  .bottom-nav{display:flex}
+  .brand-logo{font-size:24px}
+  .strip-wrap{padding:0 16px}
+  .pulse-cta{padding:40px 24px}
+}
+@media(max-width:768px){
+  header{padding:0 16px}
+}
+@media(max-width:600px){
+  .featured{height:300px}
+  .disc-row{grid-template-columns:80px 1fr;gap:16px}
+  .disc-thumb,.disc-end{display:none}
+}
+@media(max-width:480px){
+  .foot-grid{grid-template-columns:1fr}
+}
+
+/* --- MODERN UI & SECRET UX UPGRADES --- */
+.event-card, .qr-sec, .org-cta, .map-wrap, .city-panel, .icon-btn { border-width: 1px !important; border-radius: 4px; border-color: rgba(255,255,255,0.12) !important; background: rgba(17,17,17,0.6) !important; backdrop-filter: blur(8px); }
+.btn { border-width: 1px !important; border-radius: 3px; }
+.event-card:hover { border-color: var(--accent) !important; transform: translateY(-4px); }
+h1, h2, h3 { font-weight: 700 !important; letter-spacing: -0.01em !important; }
+.hero h1 { font-size: clamp(36px, 5vw, 60px) !important; }
+.org-l h2, .qr-panel h2 { font-size: clamp(30px, 4vw, 42px) !important; }
+
+/* Redacted Hover Effect */
+.redacted { position: relative; display: inline-block; background: var(--text); color: var(--text); user-select: none; transition: background 0.4s ease, color 0.4s ease; cursor: crosshair; }
+.redacted::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(0,0,0,0.8) 2px, rgba(0,0,0,0.8) 4px); opacity: 1; transition: opacity 0.4s ease; pointer-events: none; }
+.redacted:hover { background: transparent; color: var(--accent); text-shadow: 0 0 8px rgba(232,255,0,0.5); }
+.redacted:hover::after { opacity: 0; }
+
+/* Glitch Effect */
+.glitch { position: relative; display: inline-block; }
+.glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.8; }
+.glitch::before { color: #0ff; z-index: -1; animation: glitch-anim 4s infinite linear alternate-reverse; }
+.glitch::after { color: #f0f; z-index: -2; animation: glitch-anim 3s infinite linear alternate-reverse; }
+@keyframes glitch-anim {
+  0% { clip-path: inset(20% 0 80% 0); transform: translate(-2px, 1px); }
+  20% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+  40% { clip-path: inset(40% 0 50% 0); transform: translate(-2px, 2px); }
+  60% { clip-path: inset(80% 0 5% 0); transform: translate(2px, -2px); }
+  80% { clip-path: inset(10% 0 70% 0); transform: translate(-1px, 1px); }
+  100% { clip-path: inset(30% 0 40% 0); transform: translate(1px, -1px); }
+}
+
+/* Glassmorphism & Cyber Clip */
+.cyber-clip { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
+
+
+/* --- GRAVITY FALLS OCCULT AESTHETIC --- */
+:root {
+  /* accent kept from root */ /* Mystical Gold */
+  
+  --bg-uv: rgba(50, 0, 100, 0.1); /* Blacklight Purple */
+}
+
+/* Ultraviolet Blacklight Reveal Effect */
+.uv-reveal { position: relative; }
+.uv-reveal::after { content: attr(data-secret); position: absolute; inset: 0; color: #ff00ff; text-shadow: 0 0 10px #ff00ff; opacity: 0; transition: opacity 0.5s; pointer-events: none; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 24px; z-index: 10; mix-blend-mode: screen; }
+.uv-reveal:hover::after { opacity: 1; }
+.uv-reveal:hover canvas, .uv-reveal:hover img { filter: invert(1) hue-rotate(180deg) opacity(0.5); }
+
+/* Eye of Providence SVG background */
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' opacity='0.03'%3E%3Cpolygon points='50,10 90,90 10,90' fill='none' stroke='white' stroke-width='2'/%3E%3Ccircle cx='50' cy='60' r='15' fill='none' stroke='white' stroke-width='2'/%3E%3Ccircle cx='50' cy='60' r='5' fill='white'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; }
+
+.mystic-border { border: 2px solid var(--accent); border-radius: 0; position: relative; }
+.mystic-border::before, .mystic-border::after { content: '👁'; position: absolute; font-size: 14px; color: var(--accent); }
+.mystic-border::before { top: -10px; left: -10px; }
+.mystic-border::after { bottom: -10px; right: -10px; }
+
+/* Parchment vibe for cards */
+.event-card { background: linear-gradient(135deg, rgba(20,20,15,0.9), rgba(10,10,5,0.9)) !important; }
+
+
+/* Mystic image filter to emulate occult/gravity falls darkness */
+.mystic-img {
+    filter: sepia(0.6) hue-rotate(245deg) saturate(2) brightness(0.65) contrast(1.4);
+    transition: filter 0.4s ease, transform 0.4s ease;
+}
+.event-card:hover .mystic-img {
+    filter: sepia(0.3) hue-rotate(245deg) saturate(1.5) brightness(0.9) contrast(1.2);
+}
+
+
+/* Fix card images */
+.card-media img, .gallery-item img, .mystic-img, .gsc {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+}
+
+
+/* --- BREATHABILITY / PADDING FIX --- */
+.sec { padding-left: 6vw !important; padding-right: 6vw !important; }
+.hero-content { padding-right: 6vw !important; padding-left: 6vw !important; }
+header { padding-left: 6vw !important; padding-right: 6vw !important; }
+.portal-sec { padding-left: 6vw !important; padding-right: 6vw !important; }
+
+@media(max-width: 900px) {
+  .sec, .hero-content, header, .portal-sec { padding-left: 4vw !important; padding-right: 4vw !important; }
+}
+@media(max-width: 500px) {
+  .sec, .hero-content, header, .portal-sec { padding-left: 6vw !important; padding-right: 6vw !important; }
+}
+
+</style>
+</head>
+<body class="matrix-bg">
+
+<header style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; padding: 0 4vw !important;">
+  <div class="header-left" style="display: flex; align-items: center; gap: 24px;">
+    <a href="index.html" class="brand-logo" title="Sociedad Anónima de Música" data-text="S.A.M." style="text-decoration: none;">S.A.M.</a>
+    <div class="loc-chip mono" style="margin-top: 4px;">📍 <span class='redacted'>Terminal 01: BOG</span></div>
+  </div>
+  
+  <nav class="nav-links" style="display: flex; justify-content: center; gap: 28px;">
+    <a href="eventos.html">EVENTOS</a>
+    <a href="#map">LUGARES DE ENCUENTRO</a>
+    <a href="evento-detalle.html">MI CUENTA</a>
+    <a href="#org">ÚNETE</a>
+  </nav>
+  
+  <div class="header-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 16px;">
+    <a href="acceso.html" class="btn btn-ghost" style="padding: 10px 18px; border-color: var(--accent); color: var(--accent);">INICIAR SESIÓN</a>
+    <div class="icon-btn">◉</div>
+    <button class="btn btn-accent neon-glow"><span class="crear-txt">PUBLICAR EVENTO</span><span class="crear-plus">+</span></button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas data-hero="true"></canvas>
+  <div class="hero-grad"></div>
+  <div class="hero-content">
+    <div class="label">REGISTRO NACIONAL · EXPERIMENTALEDIENTE 2026</div>
+    <h1>SONIC<br><span class="y">CALENDAR</span></h1>
+    <p class="hero-sub">EL PULSO COMPLETO DEL UNDERGROUND COLOMBIANO — ACTUALIZADO EN TIEMPO REAL.</p>
+    <div class="chips">
+      <button class="filter-btn active">TODOS</button>
+      <button class="filter-btn">ESTA SEMANA</button>
+      <button class="filter-btn">INDUSTRIAL</button>
+      <button class="filter-btn">RESISTENCIA</button>
+      <button class="filter-btn">SUBLIMINAL</button>
+      <button class="filter-btn">CLASIFICADO</button>
+    </div>
+    <p class="filter-result mono" id="discResult" style="margin-top:16px;font-size:12px;letter-spacing:.1em;color:var(--muted)">7 CONVOCATORIAS · TODOS LOS GÉNEROS</p>
+  </div>
+</section>
+
+<!-- FEATURED -->
+<section class="sec" style="padding-bottom:20px">
+  <div class="feat-wrap">
+    <div style="margin-bottom:20px reveal">
+      <span class="eyebrow label">DESTACADO ESTA SEMANA</span>
+    </div>
+    <a href="evento-detalle.html" class="featured scanline sf reveal">
+      <span class="cbl"></span><span class="cbr"></span>
+      <canvas data-art="0"></canvas>
+      <div class="feat-overlay"></div>
+      <div class="feat-content">
+        <div class="live-badge"><span class="live-dot"></span>LIVE · 38 PASES CIFRADOS RESTANTES</div>
+        <h2>VOID RAVE 003</h2>
+        <div class="feat-meta">
+          <span><b>22 JUN 2026 · 22:00</b></span>
+          <span><span class='redacted'>BOG / CHAPINERO</span></span>
+          <span>VØLTA · NXMADE · DARK MOTOR</span>
+        </div>
+        <div class="feat-row">
+          <span class="feat-price">$45.000 COP</span>
+          <button class="btn btn-accent neon-glow">COMPRAR TICKET →</button>
+        </div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- PHOTO STRIP -->
+<section style="padding:28px 0 48px">
+  <div style="padding:0 28px;margin-bottom:16px">
+    <span class="label" style="color:var(--accent)">ATMOSPHERE · SWIPE →</span>
+  </div>
+  <div class="strip-wrap">
+    <div class="photo-strip" id="photoStrip">
+      <div class="strip-item"><canvas data-strip="0"></canvas><div class="stag">Void Asamblea · BOG</div></div>
+      <div class="strip-item"><canvas data-strip="1"></canvas><div class="stag">Batalla · MDE</div></div>
+      <div class="strip-item"><canvas data-strip="2"></canvas><div class="stag">Secret #009</div></div>
+      <div class="strip-item"><canvas data-strip="3"></canvas><div class="stag">Muros Vivos · CLO</div></div>
+      <div class="strip-item"><canvas data-strip="4"></canvas><div class="stag">Sótano · Chapinero</div></div>
+      <div class="strip-item"><canvas data-strip="0"></canvas><div class="stag">Noise Sessions</div></div>
+      <div class="strip-item"><canvas data-strip="1"></canvas><div class="stag">Primal 004</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DISCOVERY LIST -->
+<section class="sec">
+  <div class="wrap">
+    <div style="margin-bottom:32px">
+      <span class="eyebrow label">DISCOVERY LIST</span>
+      <h2 class="clip-reveal" style="font-size:clamp(28px,4vw,44px);text-transform:uppercase">TODO EL CALENDARIO</h2>
+    </div>
+
+    <div class="disc-list">
+
+      <a href="evento-detalle.html" class="disc-row reveal" data-genres="techno">
+        <div class="disc-date">22<span>JUN · BOG</span></div>
+        <div class="disc-thumb"><canvas data-art="0"></canvas></div>
+        <div class="disc-main">
+          <h3>VOID RAVE 003</h3>
+          <div class="disc-tags"><span class="disc-tag genre">INDUSTRIAL</span><span class="disc-tag">CHAPINERO</span><span class="disc-tag">VØLTA · NXMADE</span></div>
+        </div>
+        <div class="disc-end"><span class="disc-price">$45.000</span><span class="disc-arrow">→</span></div>
+      </a>
+
+      <a href="evento-detalle.html" class="disc-row reveal" data-genres="rap">
+        <div class="disc-date">28<span>JUN · MDE</span></div>
+        <div class="disc-thumb"><canvas data-art="1"></canvas></div>
+        <div class="disc-main">
+          <h3>BATALLA DE LOS GALLOS</h3>
+          <div class="disc-tags"><span class="disc-tag genre">RESISTENCIA</span><span class="disc-tag">POBLADO</span><span class="disc-tag">K-RUZ vs TKMX</span></div>
+        </div>
+        <div class="disc-end"><span class="disc-price">$30.000</span><span class="disc-arrow">→</span></div>
+      </a>
+
+      <a href="evento-detalle.html" class="disc-row reveal" data-genres="secret">
+        <div class="disc-date">??<span>?? · BOG</span></div>
+        <div class="disc-thumb"><canvas data-art="2"></canvas></div>
+        <div class="disc-main">
+          <h3>CLASIFICADO SESSION #009</h3>
+          <div class="disc-tags"><span class="disc-tag genre">CLASIFICADO</span><span class="disc-tag">UBICACIÓN OCULTA</span><span class="disc-tag">4H ANTES</span></div>
+        </div>
+        <div class="disc-end"><span class="disc-price">$55.000</span><span class="disc-arrow">→</span></div>
+      </a>
+
+      <a href="evento-detalle.html" class="disc-row reveal" data-genres="arte">
+        <div class="disc-date">05<span>JUL · CLO</span></div>
+        <div class="disc-thumb"><canvas data-art="3"></canvas></div>
+        <div class="disc-main">
+          <h3>MUROS VIVOS VOL.4</h3>
+          <div class="disc-tags"><span class="disc-tag genre">PROPAGANDA</span><span class="disc-tag">GRANADA</span><span class="disc-tag">LILA SECT</span></div>
+        </div>
+        <div class="disc-end"><span class="disc-price">$25.000</span><span class="disc-arrow">→</span></div>
+      </a>
+
+      <a href="evento-detalle.html" class="disc-row reveal" data-genres="exp">
+        <div class="disc-date">12<span>JUL · MDE</span></div>
+        <div class="disc-thumb"><canvas data-art="0"></canvas></div>
+        <div class="disc-main">
+          <h3>NOISE SESSIONS #12</h3>
+          <div class="disc-tags"><span class="disc-tag genre">EXPERIMENTAL</span><span class="disc-tag">LAURELES</span><span class="disc-tag">DARK MOTOR</span></div>
+        </div>
+        <div class="disc-end"><span class="disc-price">$38.000</span><span class="disc-arrow">→</span></div>
+      </a>
+
+      <a href="evento-detalle.html" class="disc-row reveal" data-genres="techno">
+        <div class="disc-date">19<span>JUL · BOG</span></div>
+        <div class="disc-thumb"><canvas data-art="1"></canvas></div>
+        <div class="disc-main">
+          <h3>PRIMAL 004</h3>
+          <div class="disc-tags"><span class="disc-tag genre">INDUSTRIAL</span><span class="disc-tag">USAQUÉN</span><span class="disc-tag">VØLTA</span></div>
+        </div>
+        <div class="disc-end"><span class="disc-price">$42.000</span><span class="disc-arrow">→</span></div>
+      </a>
+
+      <a href="evento-detalle.html" class="disc-row reveal" data-genres="indie">
+        <div class="disc-date">26<span>JUL · CLO</span></div>
+        <div class="disc-thumb"><canvas data-art="3"></canvas></div>
+        <div class="disc-main">
+          <h3>LILA SECT · SOLO SHOW</h3>
+          <div class="disc-tags"><span class="disc-tag genre">CLANDESTINO</span><span class="disc-tag">JUANCHITO</span><span class="disc-tag">LILA SECT</span></div>
+        </div>
+        <div class="disc-end"><span class="disc-price">$35.000</span><span class="disc-arrow">→</span></div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- NEWSLETTER -->
+<section class="sec">
+  <div class="pulse-cta reveal">
+    <span class="label" style="color:var(--accent);margin-bottom:16px;display:block">MANTENTE EN EL LOOP</span>
+    <h2>NEVER MISS<br>THE PULSE</h2>
+    <p>Recibe los drops secretos antes que nadie. Sin spam, solo cultura underground colombiana.</p>
+    <div class="sub-form">
+      <input type="email" placeholder="TU@EMAIL.CO" class="mono">
+      <button class="btn btn-accent neon-glow">SUSCRIBIRME</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-giant">S.A.M.</div>
+  <div style="text-align:center; font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.2em; color:var(--muted); margin-top:-10px; margin-bottom:24px; text-transform:uppercase;">Sociedad Anónima de Música</div>
+  <div class="foot-tag">SMART ACCESS MAP · COLOMBIA UNDERGROUND · 2026</div>
+  <div class="foot-line"></div>
+  <div class="foot-grid wrap">
+    <div class="foot-col"><h4>PLATAFORMA</h4><a href="eventos.html">Eventos</a><a href="index.html#map">Mapa</a><a href="evento-detalle.html">Tickets</a><a href="#">Cómo funciona</a></div>
+    <div class="foot-col"><h4>ÚNETE</h4><a href="#">Crear evento</a><a href="#">Liquidez 24H</a><a href="#">Comisiones</a><a href="#">Soporte</a></div>
+    <div class="foot-col"><h4>CIUDADES</h4><a href="#">Bogotá</a><a href="#">Medellín</a><a href="#">Cali</a><a href="#">Próximas</a></div>
+    <div class="foot-col"><h4>LEGAL</h4><a href="#">Términos</a><a href="#">Privacidad</a><a href="#">Reembolsos</a><a href="#">Contacto</a></div>
+  </div>
+  <div class="pay-row"><div class="pay-pill">PSE</div><div class="pay-pill">NEQUI</div><div class="pay-pill">DAVIPLATA</div><div class="pay-pill">BOLD</div><div class="pay-pill">WOMPI</div></div>
+  <div class="foot-bottom wrap"><div>© 2026 S.A.M. — TODOS LOS DERECHOS RESERVADOS</div><div><span class="blink"></span>BOG NODE: ONLINE</div></div>
+</footer>
+
+<nav class="bottom-nav">
+  <a href="index.html"><span>◎</span>DISCOVER</a>
+  <a href="index.html#map"><span>⊕</span>MAP</a>
+  <a href="evento-detalle.html"><span>⊟</span>MI CUENTA</a>
+  <a href="#"><span>◉</span>PROFILE</a>
+</nav>
+
+<script>
+/* ─── CANVAS ─── */
+function drawCrowd(ctx,w,h,hue,crowdY){
+  const n=Math.max(8,Math.floor(w/16));
+  for(let i=0;i<n;i++){
+    const cx=(i/(n-1))*w+(Math.random()-.5)*10;
+    const hy=crowdY+Math.sin(i*1.8)*h*.03-Math.random()*h*.04;
+    const hr=6+Math.random()*4;
+    ctx.fillStyle='rgba(4,2,10,.92)';
+    ctx.beginPath();ctx.arc(cx,hy,hr,0,Math.PI*2);ctx.fill();
+    ctx.fillRect(cx-hr*.65,hy,hr*1.3,h*.13);
+    if(Math.random()>.45){
+      ctx.beginPath();ctx.moveTo(cx-hr*.5,hy+hr);ctx.lineTo(cx-hr*2.2,hy-h*.08);
+      ctx.lineWidth=3;ctx.strokeStyle='rgba(4,2,10,.9)';ctx.stroke();
+    }
+    ctx.beginPath();ctx.arc(cx,hy,hr,Math.PI*1.1,Math.PI*1.9);
+    const rl=ctx.createLinearGradient(cx-hr,hy-hr,cx+hr,hy);
+    rl.addColorStop(0,`hsla(${hue},80%,65%,0.5)`);rl.addColorStop(1,'transparent');
+    ctx.strokeStyle=rl;ctx.lineWidth=1.5;ctx.stroke();
+  }
+}
+function drawParty(ctx,w,h,t){
+  const P=[
+    {bg:'#040212',h:270,l:'rgba(120,40,240,',l2:'rgba(200,160,255,',fog:'rgba(40,10,80,'},
+    {bg:'#100204',h:0,l:'rgba(220,50,30,',l2:'rgba(255,140,100,',fog:'rgba(60,15,10,'},
+    {bg:'#020a06',h:160,l:'rgba(0,210,140,',l2:'rgba(140,255,200,',fog:'rgba(0,60,40,'},
+    {bg:'#080600',h:45,l:'rgba(210,180,0,',l2:'rgba(240,255,120,',fog:'rgba(60,50,0,'},
+  ];
+  const p=P[t%P.length];
+  ctx.fillStyle=p.bg;ctx.fillRect(0,0,w,h);
+  for(let i=0;i<10;i++){
+    const ang=Math.PI*(.05+i*.09);
+    const x0=w*.5,y0=0,x1=x0+Math.cos(ang-Math.PI/2)*h*1.3,y1=y0+Math.sin(ang-Math.PI/2)*h*1.3;
+    const lg=ctx.createLinearGradient(x0,y0,x1,y1);
+    const iv=.3+Math.random()*.5;
+    lg.addColorStop(0,p.l+iv+')');lg.addColorStop(.5,p.l+(iv*.1)+')');lg.addColorStop(1,'transparent');
+    ctx.strokeStyle=lg;ctx.lineWidth=.8+Math.random()*2.5;
+    ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+  }
+  const sg=ctx.createRadialGradient(w/2,0,0,w/2,0,w*.6);
+  sg.addColorStop(0,p.l+'0.5)');sg.addColorStop(.35,p.l+'0.08)');sg.addColorStop(1,'transparent');
+  ctx.fillStyle=sg;ctx.fillRect(0,0,w,h);
+  drawCrowd(ctx,w,h,p.h,h*.63);
+  const ff=ctx.createLinearGradient(0,h*.65,0,h);
+  ff.addColorStop(0,'transparent');ff.addColorStop(1,p.fog+'0.55)');
+  ctx.fillStyle=ff;ctx.fillRect(0,0,w,h);
+  for(let i=0;i<3;i++){
+    const sx=w*(.2+i*.3),sy=h*.07;
+    const sp=ctx.createRadialGradient(sx,sy,0,sx,sy,h*.18);
+    sp.addColorStop(0,p.l2+'0.3)');sp.addColorStop(1,'transparent');
+    ctx.fillStyle=sp;ctx.fillRect(0,0,w,h);
+  }
+  for(let y=0;y<h;y+=2){ctx.fillStyle='rgba(0,0,0,.16)';ctx.fillRect(0,y,w,1);}
+}
+function sz(cv){
+  const r=cv.getBoundingClientRect();
+  cv.width=Math.max(r.width,100);cv.height=Math.max(r.height,100);
+  return cv.getContext('2d');
+}
+function renderAll(){
+  // Hero background
+  const heroCV=document.querySelector('canvas[data-hero]');
+  if(heroCV){const ctx=sz(heroCV);drawParty(ctx,heroCV.width,heroCV.height,0);}
+  // Event art
+  document.querySelectorAll('canvas[data-art]').forEach(cv=>{
+    const ctx=sz(cv);drawParty(ctx,cv.width,cv.height,+cv.dataset.art);
+  });
+  // Strip
+  document.querySelectorAll('canvas[data-strip]').forEach(cv=>{
+    const ctx=sz(cv);drawParty(ctx,cv.width,cv.height,+cv.dataset.strip);
+  });
+}
+window.addEventListener('load',renderAll);
+window.addEventListener('resize',()=>{clearTimeout(window._rt);window._rt=setTimeout(renderAll,180);});
+
+/* ─── SCROLL REVEAL ─── */
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('revealed');ro.unobserve(e.target);}});
+},{threshold:.12});
+document.querySelectorAll('.reveal,.clip-reveal').forEach(el=>ro.observe(el));
+
+/* ─── LOGO GLITCH ─── */
+const gc='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&';
+function glitch(el){const o=el.dataset.text||el.textContent;let i=0;const iv=setInterval(()=>{el.textContent=o.split('').map((c,j)=>j<i?c:gc[Math.floor(Math.random()*gc.length)]).join('');if(i>=o.length){el.textContent=o;clearInterval(iv);}i+=.5;},38);}
+document.querySelector('.brand-logo').addEventListener('mouseenter',e=>glitch(e.currentTarget));
+
+/* ─── FILTERS + DISC-ROW FILTER ─── */
+function filterRows(genre,labelText){
+  const rows=document.querySelectorAll('.disc-row');
+  let visible=0;
+  rows.forEach(row=>{
+    const genres=(row.dataset.genres||'').split(',');
+    const match=genre==='all'||genres.includes(genre);
+    if(match){row.classList.remove('row-hidden');visible++;}
+    else{row.classList.add('row-hidden');}
+  });
+  const res=document.getElementById('discResult');
+  if(res)res.textContent=visible+' EVENTO'+(visible===1?'':'S')+' · '+labelText;
+}
+const CHIP_MAP={'todos':'all','esta semana':'all','techno':'techno','rap':'rap','arte':'arte','secret':'secret'};
+document.querySelectorAll('.chips').forEach(g=>{
+  g.querySelectorAll('.filter-btn').forEach(b=>{
+    b.addEventListener('click',function(){
+      g.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active'));
+      this.classList.add('active');
+      const txt=this.textContent.trim();
+      const key=txt.toLowerCase();
+      const genre=CHIP_MAP[key]||'all';
+      const label=genre==='all'?'TODOS LOS GÉNEROS':txt.toUpperCase();
+      filterRows(genre,label);
+    });
+  });
+});
+
+/* ─── STRIP DRAG SCROLL ─── */
+const strip=document.getElementById('photoStrip');
+if(strip){
+  let isDown=false,startX,scrollLeft;
+  strip.addEventListener('mousedown',e=>{isDown=true;strip.style.cursor='grabbing';startX=e.pageX-strip.offsetLeft;scrollLeft=strip.scrollLeft;});
+  strip.addEventListener('mouseleave',()=>{isDown=false;strip.style.cursor='';});
+  strip.addEventListener('mouseup',()=>{isDown=false;strip.style.cursor='';});
+  strip.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();const x=e.pageX-strip.offsetLeft;strip.scrollLeft=scrollLeft-(x-startX)*1.2;});
+  let tStartX,tScroll;
+  strip.addEventListener('touchstart',e=>{tStartX=e.touches[0].pageX-strip.offsetLeft;tScroll=strip.scrollLeft;},{passive:true});
+  strip.addEventListener('touchmove',e=>{const x=e.touches[0].pageX-strip.offsetLeft;strip.scrollLeft=tScroll-(x-tStartX)*1.2;},{passive:true});
+  strip.addEventListener('touchend',()=>{});
+}
+</script>
+
+<script>
+// Scramble Text Effect (Secret Society Decryption)
+class TextScramble {
+  constructor(el) {
+    this.el = el;
+    this.chars = '!<>-_\\/[]{}—=+*^?#________';
+    this.update = this.update.bind(this);
+  }
+  setText(newText) {
+    const oldText = this.el.innerText;
+    const length = Math.max(oldText.length, newText.length);
+    const promise = new Promise((resolve) => this.resolve = resolve);
+    this.queue = [];
+    for (let i = 0; i < length; i++) {
+      const from = oldText[i] || '';
+      const to = newText[i] || '';
+      const start = Math.floor(Math.random() * 40);
+      const end = start + Math.floor(Math.random() * 40);
+      this.queue.push({ from, to, start, end });
+    }
+    cancelAnimationFrame(this.frameRequest);
+    this.frame = 0;
+    this.update();
+    return promise;
+  }
+  update() {
+    let output = '';
+    let complete = 0;
+    for (let i = 0, n = this.queue.length; i < n; i++) {
+      let { from, to, start, end, char } = this.queue[i];
+      if (this.frame >= end) {
+        complete++;
+        output += to;
+      } else if (this.frame >= start) {
+        if (!char || Math.random() < 0.28) {
+          char = this.randomChar();
+          this.queue[i].char = char;
+        }
+        output += `<span class="mono" style="color:var(--muted)">${char}</span>`;
+      } else {
+        output += from;
+      }
+    }
+    this.el.innerHTML = output;
+    if (complete === this.queue.length) {
+      this.resolve();
+    } else {
+      this.frameRequest = requestAnimationFrame(this.update);
+      this.frame++;
+    }
+  }
+  randomChar() {
+    return this.chars[Math.floor(Math.random() * this.chars.length)];
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Apply scramble to headers on load/scroll
+  const el = document.querySelector('.hero h1');
+  if(el) {
+    const originalText = el.innerHTML;
+    const cleanText = el.innerText;
+    const fx = new TextScramble(el);
+    fx.setText(cleanText).then(() => {
+      el.innerHTML = originalText; // restore spans like <span class="y">
+    });
+  }
+});
+</script>
+
+</body>
+</html>
