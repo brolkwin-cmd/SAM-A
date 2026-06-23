@@ -268,20 +268,24 @@ header { padding-left: 6vw !important; padding-right: 6vw !important; }
 <body class="matrix-bg">
 
 <header style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 20px; padding: 0 4vw !important;">
-  <div class="header-left" style="display: flex; align-items: center; gap: 24px;">
-    <a href="index.html" class="brand-logo" style="text-decoration: none;">S.A.M.</a>
-    <div class="loc-chip mono" style="margin-top: 4px; font-size: 11px;">📍 <span class='redacted'>Terminal 01: BOG</span></div>
+  <div class="header-left" style="display:flex;align-items:center;gap:20px">
+    <a href="index.html" class="brand-logo" data-text="S.A.M." style="text-decoration:none">S.A.M.</a>
+    <div class="loc-chip mono" style="display:flex;align-items:center;gap:8px">
+      <span style="color:#ff3b6f;font-size:16px">📍</span>
+      <span class="redacted" style="font-size:11px;letter-spacing:.06em">BOG · TERMINAL 01</span>
+    </div>
   </div>
-  
-  <nav class="nav-links" style="display: flex; justify-content: center; gap: 28px;">
+
+  <nav class="nav-links" style="display:flex;justify-content:center;gap:28px">
     <a href="eventos.html">EVENTOS</a>
     <a href="index.html#map">LUGARES DE ENCUENTRO</a>
-    <a href="index.html#org">ÚNETE A LA SOCIEDAD</a>
+    <a href="index.html#org">ÚNETE AL CÍRCULO</a>
   </nav>
-  
-  <div class="header-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 16px;">
-    <a href="acceso.html" class="btn btn-ghost" style="padding: 10px 18px; border-color: var(--accent); color: var(--accent);">INICIAR SESIÓN</a>
-    <button class="btn btn-accent neon-glow" onclick="location.href='acceso.html'"><span class="crear-txt">PUBLICAR EVENTO</span><span class="crear-plus">+</span></button>
+
+  <div class="header-right" style="display:flex;justify-content:flex-end;align-items:center;gap:12px">
+    <a href="acceso.html" class="btn btn-ghost" style="padding:9px 18px;border-color:var(--accent);color:var(--accent)">INICIAR SESIÓN</a>
+    <button class="icon-btn" style="border-radius:50%;width:38px;height:38px;font-size:16px;border-color:var(--border)" title="Perfil">◉</button>
+    <button class="btn btn-accent neon-glow glitch-hover" onclick="location.href='evento-detalle.html'"><span class="crear-txt">PUBLICAR EVENTO</span><span class="crear-plus">+</span></button>
   </div>
 </header>
 
